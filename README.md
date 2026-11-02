@@ -1,4 +1,4 @@
-# hanbit-math-web
+# academy-enrollment-web
 
 수학학원 "한빛수학" 코어 웹 — 학원 소개·반 목록, 학부모(자녀 요약·수강 신청·보강·결제), 학생(내 스케줄·출석·성적). Next.js 16 + Tailwind 4.
 
