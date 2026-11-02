@@ -1,17 +1,15 @@
-import { EmptyState } from '@/components/ui/states';
-import { RequireAuth } from '@/features/auth/RequireAuth';
-import { SignedInHeader } from '@/features/auth/SignedInHeader';
+'use client';
 
-export const instant = false;
+import { ScheduleScreen } from '@/features/student/ScheduleScreen';
+import { StudentShell } from '@/features/student/StudentShell';
 
-export default function Page() {
+const today = () => new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10);
+
+export default function MySchedulePage() {
   return (
-    <RequireAuth roles={['STUDENT']}>
-      <main className="mx-auto w-full max-w-[480px] px-4 pb-24">
-        <SignedInHeader />
-        <h1 className="text-page">내 스케줄</h1>
-        <EmptyState message="로그인했어요. 내 스케줄·출석 기록은 3단계 수업일·출결 항목에서 붙여요." />
-      </main>
-    </RequireAuth>
+    <StudentShell>
+      <h1 className="text-page">내 스케줄</h1>
+      <ScheduleScreen path={(d) => `/student/schedule?date=${d}`} initialDate={today()} />
+    </StudentShell>
   );
 }
