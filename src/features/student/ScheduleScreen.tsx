@@ -16,8 +16,8 @@ const WEEKDAY = ['일', '월', '화', '수', '목', '금', '토'];
 const addDays = (d: string, n: number) => new Date(Date.parse(`${d}T00:00:00Z`) + n * 86400000).toISOString().slice(0, 10);
 
 /** 내 스케줄 — final/screens/s-schedule. 주간, 정규·보강·휴강·보충 */
-export function ScheduleScreen({ path, initialDate }: { path: (date: string) => string; initialDate: string }) {
-  const [date, setDate] = useState(initialDate);
+export function ScheduleScreen({ path, initialDate }: { path: (date: string) => string; initialDate?: string }) {
+  const [date, setDate] = useState(() => initialDate ?? new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 10));
   const { data } = useApi<Week>(path(date));
   const days = data ? Array.from({ length: 7 }, (_, i) => addDays(data.from, i)) : [];
 

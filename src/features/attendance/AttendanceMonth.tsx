@@ -37,8 +37,9 @@ const shift = (ym: string, d: number) => {
 };
 
 /** 월 출석 기록 — 학생(내 출석)·학부모(자녀 요약 출석 탭)가 같이 쓴다. 지각 3번 = 결석 1번 (C13) */
-export function AttendanceMonth({ path, initialMonth }: { path: (month: string) => string; initialMonth: string }) {
-  const [month, setMonth] = useState(initialMonth);
+export function AttendanceMonth({ path, initialMonth }: { path: (month: string) => string; initialMonth?: string }) {
+  // 로그인 뒤에만 그려지는 곳이라 여기서 오늘을 읽는다 (미리 그리는 단계에서는 실행되지 않음)
+  const [month, setMonth] = useState(() => initialMonth ?? new Date(Date.now() + 9 * 3600_000).toISOString().slice(0, 7));
   const { data } = useApi<MonthAttendance>(path(month));
 
   const marks: CalendarMark[] = [
