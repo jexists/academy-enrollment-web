@@ -3,15 +3,16 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
+import { Icon } from '@/components/ui/Icon';
 import { RequireAuth } from '@/features/auth/RequireAuth';
 import { SignedInHeader } from '@/features/auth/SignedInHeader';
 import { cn } from '@/lib/cn';
 
 const TABS = [
-  { href: '/home', label: '홈' },
-  { href: '/enrollments', label: '신청', also: ['/enroll', '/refund', '/makeup'] },
-  { href: '/payments', label: '결제' },
-  { href: '/account', label: '내 정보' },
+  { href: '/home', label: '홈', icon: 'home' },
+  { href: '/enrollments', label: '신청', icon: 'apply', also: ['/enroll', '/refund', '/makeup'] },
+  { href: '/payments', label: '결제', icon: 'card' },
+  { href: '/account', label: '내 정보', icon: 'user' },
 ];
 
 /** 학부모 공통 틀: 가운데 480 + 하단 탭(640 이상이면 위쪽 메뉴) — components.md AppShell core-parent */
@@ -41,12 +42,13 @@ function TabNav({ className, bottom }: { className?: string; bottom?: boolean })
               href={tab.href}
               aria-current={active ? 'page' : undefined}
               className={cn(
-                'flex items-center justify-center text-body-sm',
-                bottom ? 'flex-1' : 'h-9 rounded-control px-3',
-                active ? 'font-bold text-fg' : 'text-subtle hover:text-fg',
-                !bottom && active && 'bg-s1',
+                'flex items-center justify-center',
+                bottom ? 'flex-1 flex-col gap-0.5 text-[11px]' : 'h-9 gap-1.5 rounded-control px-3 text-body-sm',
+                active ? 'font-bold text-primary' : 'text-subtle hover:text-fg',
+                !bottom && active && 'bg-primary-c',
               )}
             >
+              <Icon name={tab.icon} className={bottom ? 'size-6' : 'size-4'} />
               {tab.label}
             </Link>
           );

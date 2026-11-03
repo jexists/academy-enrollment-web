@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { ButtonLink } from '@/components/ui/Button';
-import { Stat } from '@/components/ui/Stat';
+import { Icon } from '@/components/ui/Icon';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { Tabs } from '@/components/ui/Tabs';
 import { Skeleton } from '@/components/ui/states';
@@ -54,62 +54,81 @@ export function HomeScreen() {
         (!data ? (
           <Skeleton className="h-64" />
         ) : (
-          <div className="flex flex-col gap-8">
-            <section className="grid grid-cols-3 gap-4">
-              <Stat label={`${Number(data.month.slice(5))}월 출석률`} value={data.attendance.rate === null ? '—' : `${data.attendance.rate}%`} sub={`수업 ${data.attendance.total}회`} />
-              <Stat label="결석 · 지각" value={`${data.attendance.결석} · ${data.attendance.지각}`} sub={`환산 결석 ${data.attendance.convertedAbsence}회`} />
-              <Stat label="보강" value={`${data.attendance.makeups}회`} />
+          <div className="flex flex-col gap-6">
+            <section className="flex flex-col gap-3">
+              <div className="flex items-end gap-2">
+                <span className="text-meta text-muted">{Number(data.month.slice(5))}월 출석률</span>
+                <Link href="#" onClick={(e) => { e.preventDefault(); setTab('attendance'); }} className="ml-auto text-meta text-subtle hover:text-fg">
+                  전체 내역 ›
+                </Link>
+              </div>
+              <span className="text-[2.25rem] font-bold leading-none tabular-nums">
+                {data.attendance.rate === null ? '—' : data.attendance.rate}
+                <span className="ml-0.5 text-sec">{data.attendance.rate === null ? '' : '%'}</span>
+              </span>
+              <div className="grid grid-cols-4 rounded-modal bg-s1 py-3 text-center">
+                {[
+                  ['결석', data.attendance.결석],
+                  ['지각', data.attendance.지각],
+                  ['환산 결석', `${data.attendance.convertedAbsence}회`],
+                  ['보강', data.attendance.makeups],
+                ].map(([label, value]) => (
+                  <div key={label} className="flex flex-col gap-1 border-l border-line first:border-l-0">
+                    <span className="text-meta text-muted">{label}</span>
+                    <span className="text-sec tabular-nums">{value}</span>
+                  </div>
+                ))}
+              </div>
             </section>
 
-            {(data.dueTotal > 0 || data.canRequestMakeup) && (
-              <section className="flex flex-col gap-1">
-                <h2 className="text-sec">해야 할 일</h2>
-                <ul className="flex flex-col divide-y divide-line">
-                  {data.dueTotal > 0 && (
-                    <li className="flex min-h-14 items-center gap-3">
-                      <div className="flex flex-1 flex-col">
-                        <span className="text-body font-medium">이번 달 결제할 금액 {won(data.dueTotal)}원</span>
-                        <span className="text-meta text-muted">
-                          {data.due.map((d) => `${d.studentName} ${won(d.charge)}${d.discount ? ' (둘째 10%)' : ''}`).join(' + ')}
-                        </span>
-                      </div>
-                      <Link href="/payments" className="text-meta font-medium text-muted hover:text-fg">
-                        결제 ›
-                      </Link>
-                    </li>
-                  )}
-                  {data.canRequestMakeup && (
-                    <li className="flex min-h-14 items-center gap-3">
-                      <div className="flex flex-1 flex-col">
-                        <span className="text-body font-medium">보강을 신청할 수 있어요</span>
-                        <span className="text-meta text-muted">이번 달 결석 {data.absencesInMonth}회 · 결석한 달 안에서만 잡을 수 있어요</span>
-                      </div>
-                      <ButtonLink href="/makeup" size="sm">
-                        보강 신청
-                      </ButtonLink>
-                    </li>
-                  )}
-                </ul>
+            {data.dueTotal > 0 && (
+              <section className="flex flex-col gap-1 rounded-modal bg-primary-c p-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-meta font-medium text-fg">{Number(data.month.slice(5))}월 결제할 금액</span>
+                  <StatusBadge status="미납" />
+                  <Link href="/payments" className="ml-auto text-meta font-medium text-primary">
+                    결제 · 환불 ›
+                  </Link>
+                </div>
+                <span className="text-[1.75rem] font-bold tabular-nums">
+                  {won(data.dueTotal)}
+                  <span className="ml-0.5 text-body font-medium">원</span>
+                </span>
+                <span className="text-meta text-muted">
+                  {data.due.map((d) => `${d.studentName} ${won(d.charge)}${d.discount ? ' (둘째 10% 할인)' : ''}`).join(' + ')}
+                </span>
+                <span className="mt-1 text-meta text-subtle">결제는 학원 데스크·계좌이체로 해 주세요.</span>
               </section>
             )}
 
-            <section className="flex flex-col gap-1">
-              <div className="flex items-center">
-                <h2 className="flex-1 text-sec">수강 중인 반</h2>
-                <Link href="/enroll" className="text-meta text-muted hover:text-fg">
-                  수강 신청 ›
-                </Link>
-              </div>
+            {data.canRequestMakeup && (
+              <section className="flex items-center gap-3 rounded-modal border border-line p-4">
+                <div className="flex flex-1 flex-col">
+                  <span className="text-body font-medium">보강을 신청할 수 있어요</span>
+                  <span className="text-meta text-muted">이번 달 결석 {data.absencesInMonth}회 · 결석한 달 안에서만 잡을 수 있어요</span>
+                </div>
+                <ButtonLink href="/makeup" size="sm">
+                  보강 신청
+                </ButtonLink>
+              </section>
+            )}
+
+            <section className="flex flex-col gap-2">
+              <h2 className="text-sec">수강 중인 반</h2>
               {data.classes.length === 0 ? (
                 <p className="text-body-sm text-subtle">다니는 반이 없어요.</p>
               ) : (
-                <ul className="flex flex-col divide-y divide-line">
+                <ul className="flex flex-col gap-2">
                   {data.classes.map((c) => (
-                    <li key={c.name} className="flex min-h-14 items-center gap-3">
-                      <div className="flex flex-1 flex-col">
-                        <span className="text-body font-medium">{c.name}</span>
-                        <span className="text-meta text-muted">
-                          {scheduleLabel(c.schedules)} · {c.teacherName}
+                    <li key={c.name} className="flex items-center gap-3 rounded-modal border border-line px-4 py-3">
+                      <div className="flex flex-1 flex-col gap-0.5">
+                        <span className="flex items-center gap-2 text-body font-bold">
+                          {c.name}
+                          <span className="rounded bg-s1 px-1.5 text-badge text-muted">{c.teacherName}</span>
+                        </span>
+                        <span className="flex items-center gap-1 text-meta text-muted">
+                          <Icon name="clock" className="size-3.5" />
+                          {scheduleLabel(c.schedules)}
                         </span>
                       </div>
                       {c.status !== '수강중' && <StatusBadge status={c.status} />}
@@ -117,6 +136,25 @@ export function HomeScreen() {
                   ))}
                 </ul>
               )}
+            </section>
+
+            <section className="flex flex-col gap-1">
+              <h2 className="text-meta text-subtle">학원 서비스 바로가기</h2>
+              <ul className="flex flex-col divide-y divide-line">
+                {[
+                  ['/enroll', 'calendar', '수강 신청'],
+                  ['/enrollments', 'apply', '신청 내역'],
+                  ['/makeup', 'repeat', '보강 신청'],
+                ].map(([href, icon, label]) => (
+                  <li key={href}>
+                    <Link href={href} className="flex h-12 items-center gap-3 text-body hover:text-primary">
+                      <Icon name={icon} className="text-subtle" />
+                      <span className="flex-1">{label}</span>
+                      <span className="text-subtle">›</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </section>
           </div>
         ))}

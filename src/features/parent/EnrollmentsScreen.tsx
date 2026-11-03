@@ -43,9 +43,13 @@ export function EnrollmentsScreen() {
       <FilterChips options={FILTERS.map((f) => ({ value: f, label: f }))} value={filter} onChange={setFilter} />
       {rows.length === 0 && <EmptyState message="해당하는 신청이 없어요." />}
       {children.map(([studentId, name]) => (
-        <section key={studentId} className="flex flex-col gap-1">
-          <h2 className="text-sec">{name}</h2>
-          <ul className="flex flex-col divide-y divide-line">
+        <section key={studentId} className="flex flex-col rounded-modal border border-line">
+          <h2 className="flex items-center gap-2 border-b border-line px-4 py-3 text-sec">
+            <span className="flex size-7 items-center justify-center rounded-full bg-primary-c text-meta font-bold text-primary">{name[1]}</span>
+            {name}
+            <span className="ml-auto text-meta font-normal text-subtle">{rows.filter((e) => e.studentId === studentId).length}건</span>
+          </h2>
+          <ul className="flex flex-col divide-y divide-line px-4">
             {rows
               .filter((e) => e.studentId === studentId)
               .map((e) => (
