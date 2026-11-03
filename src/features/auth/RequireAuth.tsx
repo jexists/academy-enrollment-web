@@ -11,17 +11,20 @@ import { useAuth } from './AuthProvider';
  * 진짜 권한 검사는 백엔드가 한다 — 여기는 화면 이동만.
  */
 export function RequireAuth({ roles, children }: { roles?: Role[]; children: ReactNode }) {
-  const { session } = useAuth();
+  const { session, signedOut } = useAuth();
   const router = useRouter();
   const user = session?.user;
   const allowed = !!user && !user.mustChangePassword && (!roles || roles.includes(user.role));
 
   useEffect(() => {
     if (session === undefined) return;
-    if (!user) router.replace('/login');
-    else if (user.mustChangePassword) router.replace('/change-password');
+    if (!user) {
+      if (!signedOut) router.replace('/login');
+      return;
+    }
+    if (user.mustChangePassword) router.replace('/change-password');
     else if (roles && !roles.includes(user.role)) router.replace(HOME_PATH[user.role]);
-  }, [session, user, roles, router]);
+  }, [session, user, roles, router, signedOut]);
 
   if (!allowed) {
     return (

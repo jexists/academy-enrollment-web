@@ -14,14 +14,14 @@ import { useAuth } from './AuthProvider';
 export function ChangePasswordForm() {
   const router = useRouter();
   const toast = useToast();
-  const { session, updateUser, signOut } = useAuth();
+  const { session, updateUser, signOut, signedOut } = useAuth();
   const [form, setForm] = useState({ currentPassword: '', newPassword: '', confirm: '' });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (session === null) router.replace('/login');
-  }, [session, router]);
+    if (session === null && !signedOut) router.replace('/login');
+  }, [session, signedOut, router]);
 
   if (!session) return null;
   const temporary = session.user.mustChangePassword;
@@ -81,7 +81,7 @@ export function ChangePasswordForm() {
         </Button>
       </form>
       {temporary && (
-        <Button variant="ghost" onClick={() => { signOut(); router.replace('/login'); }}>
+        <Button variant="ghost" onClick={signOut}>
           다른 계정으로 로그인
         </Button>
       )}

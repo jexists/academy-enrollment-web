@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { ROLE_LABEL } from '@/lib/auth-storage';
 import { useAuth } from './AuthProvider';
@@ -8,7 +7,6 @@ import { useAuth } from './AuthProvider';
 /** 로그인한 사람 이름과 로그아웃. 코어 웹 화면 맨 위 */
 export function SignedInHeader() {
   const { session, signOut } = useAuth();
-  const router = useRouter();
   const user = session?.user;
   return (
     <header className="flex h-14 items-center gap-2">
@@ -21,10 +19,7 @@ export function SignedInHeader() {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => {
-          signOut();
-          router.replace('/login');
-        }}
+        onClick={signOut}
       >
         로그아웃
       </Button>

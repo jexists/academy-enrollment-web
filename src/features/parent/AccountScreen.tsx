@@ -1,6 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 import { Button, ButtonLink } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
@@ -21,7 +20,6 @@ interface Account {
 
 /** 내 정보 · 회원 탈퇴 — final/screens/c-account. 탈퇴는 조건 확인 후 확인 Modal (결정29) */
 export function AccountScreen() {
-  const router = useRouter();
   const { signOut } = useAuth();
   const { data, setData } = useApi<Account>('/parent/account');
   const [editing, setEditing] = useState(false);
@@ -101,7 +99,6 @@ export function AccountScreen() {
                   await mutate('/parent/account/withdraw', 'POST');
                   toast.success('탈퇴했어요');
                   signOut();
-                  router.replace('/');
                 } catch (reason) {
                   toast.error(errorMessage(reason));
                   setBusy(false);

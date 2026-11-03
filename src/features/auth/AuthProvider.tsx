@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { api } from '@/lib/api';
 import { readSession, writeSession, type Session, type SessionUser } from '@/lib/auth-storage';
@@ -8,14 +9,19 @@ interface AuthState {
   /** 저장소를 읽기 전에는 undefined (그동안 화면을 그리지 않는다) */
   session: Session | null | undefined;
   signIn: (session: Session) => void;
+  /** 로그아웃: 저장소를 비우고 첫 화면(/)으로 보낸다 */
   signOut: () => void;
+  /** 방금 로그아웃했는지 — 보호 화면이 /login으로 되돌리지 않게 한다 */
+  signedOut: boolean;
   updateUser: (user: SessionUser) => void;
 }
 
 const AuthContext = createContext<AuthState | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const router = useRouter();
   const [session, setSession] = useState<Session | null | undefined>(undefined);
+  const [signedOut, setSignedOut] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -46,13 +52,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = useCallback((next: Session) => {
     writeSession(next);
+    setSignedOut(false);
     setSession(next);
   }, []);
 
   const signOut = useCallback(() => {
     writeSession(null);
+    setSignedOut(true);
     setSession(null);
-  }, []);
+    router.replace('/');
+  }, [router]);
 
   const updateUser = useCallback((user: SessionUser) => {
     setSession((current) => {
@@ -63,7 +72,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const value = useMemo(() => ({ session, signIn, signOut, updateUser }), [session, signIn, signOut, updateUser]);
+  const value = useMemo(
+    () => ({ session, signIn, signOut, signedOut, updateUser }),
+    [session, signIn, signOut, signedOut, updateUser],
+  );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
