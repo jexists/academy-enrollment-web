@@ -51,7 +51,27 @@ const ICON = {
   close: 'M6 6l12 12M18 6 6 18',
   stop: 'M7 7h10v10H7z',
   refresh: 'M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5',
+  down: 'M12 5v14M6 13l6 6 6-6',
 };
+
+/** 맨 아래에서 이만큼 안쪽이면 "맨 아래에 있다"로 본다 */
+const BOTTOM_GAP = 48;
+
+/** 답을 기다릴 때 점 3개 (차례로 튀어 오른다) */
+function TypingDots({ className }: { className?: string }) {
+  return (
+    <span role="status" aria-label="답을 쓰고 있어요" className={cn('inline-flex items-center gap-1', className)}>
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          aria-hidden
+          className="size-1.5 animate-typing rounded-full bg-current motion-reduce:animate-none"
+          style={{ animationDelay: `${i * 160}ms` }}
+        />
+      ))}
+    </span>
+  );
+}
 
 /** 오른쪽 아래 "문의하기" 챗봇. 모바일은 아래 시트, 넓은 화면은 카드 패널 */
 export function ChatWidget() {
@@ -69,11 +89,32 @@ export function ChatWidget() {
   const formRef = useRef<HTMLFormElement>(null);
   const focusInput = () => formRef.current?.querySelector('textarea')?.focus();
 
-  // 새 글자가 오면 맨 아래로
-  useEffect(() => {
+  // 맨 아래를 보고 있을 때만 새 글자를 따라 내려간다. 위로 올려 읽는 중이면 그대로 둔다
+  const [atBottom, setAtBottom] = useState(true);
+  const atBottomRef = useRef(true);
+  const scrollToBottom = (smooth = false) => {
     const list = listRef.current;
-    if (list) list.scrollTop = list.scrollHeight;
+    if (list) list.scrollTo({ top: list.scrollHeight, behavior: smooth ? 'smooth' : 'auto' });
+  };
+  const onListScroll = () => {
+    const list = listRef.current;
+    if (!list) return;
+    const bottom = list.scrollHeight - list.scrollTop - list.clientHeight <= BOTTOM_GAP;
+    atBottomRef.current = bottom;
+    setAtBottom(bottom);
+  };
+  useEffect(() => {
+    if (atBottomRef.current) scrollToBottom();
   }, [messages, unavailable]);
+  // 패널을 열면 맨 아래부터 (상태는 여는 버튼에서 되돌린다)
+  useEffect(() => {
+    if (open) scrollToBottom();
+  }, [open]);
+  const openPanel = () => {
+    atBottomRef.current = true;
+    setAtBottom(true);
+    setOpen(true);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -103,6 +144,9 @@ export function ChatWidget() {
     ]);
     setDraft('');
     setStreaming(true);
+    // 내가 물어본 건 항상 보이게 맨 아래로
+    atBottomRef.current = true;
+    setAtBottom(true);
     const controller = new AbortController();
     abortRef.current = controller;
 
@@ -164,7 +208,7 @@ export function ChatWidget() {
       {!open && (
         <button
           type="button"
-          onClick={() => setOpen(true)}
+          onClick={openPanel}
           aria-label="문의하기"
           aria-haspopup="dialog"
           className={cn(
@@ -199,7 +243,8 @@ export function ChatWidget() {
               </Button>
             </header>
 
-            <div ref={listRef} className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-4" aria-live="polite">
+            <div className="relative flex min-h-0 flex-1 flex-col">
+            <div ref={listRef} onScroll={onListScroll} className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-4" aria-live="polite">
               <div className="max-w-[85%] self-start rounded-modal bg-s1 px-3 py-2 text-body">
                 안녕하세요, 한빛수학 문의 도우미예요. 학원 안내 문서를 보고 수강료·환불·보강·상담 같은 궁금한 점에 답해 드려요.
               </div>
@@ -233,6 +278,23 @@ export function ChatWidget() {
                   </p>
                 </div>
               )}
+            </div>
+
+            {/* 위로 올려 읽는 중: 답을 쓰는 동안은 점 3개가 따라오고, 끝나면 아래 화살표 */}
+            {!atBottom && messages.length > 0 && (
+              <button
+                type="button"
+                onClick={() => scrollToBottom(true)}
+                aria-label={streaming ? '답을 쓰고 있어요. 맨 아래로' : '맨 아래로'}
+                className={cn(
+                  'absolute bottom-3 left-1/2 flex h-9 -translate-x-1/2 animate-rise items-center justify-center gap-2 rounded-full border border-line2 bg-canvas text-muted transition-colors hover:text-fg',
+                  streaming ? 'px-3' : 'w-9',
+                )}
+              >
+                {streaming && <TypingDots />}
+                <Glyph d={ICON.down} className="size-4" />
+              </button>
+            )}
             </div>
 
             <form ref={formRef} onSubmit={onSubmit} className="flex shrink-0 items-end gap-2 border-t border-line px-4 pt-3 pb-[max(12px,env(safe-area-inset-bottom))]">
@@ -273,7 +335,7 @@ function Bubble({ message }: { message: ChatMessage }) {
     <div className="flex max-w-[85%] flex-col gap-1 self-start">
       {(message.text || waiting) && (
         <div className="rounded-modal bg-s1 px-3 py-2 text-body whitespace-pre-wrap">
-          {waiting ? <span className="text-subtle">답을 찾고 있어요…</span> : message.text}
+          {waiting ? <TypingDots className="h-[22px] text-subtle" /> : message.text}
           {message.streaming && message.text && <span className="ml-0.5 inline-block h-4 w-0.5 animate-pulse bg-fg align-middle" aria-hidden />}
         </div>
       )}
