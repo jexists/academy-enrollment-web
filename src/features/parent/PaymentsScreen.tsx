@@ -64,6 +64,8 @@ export function PaymentsScreen() {
         </section>
       )}
 
+      {/* 환불 내역만 골랐는데 없으면 빈 화면 대신 안내 (전체에서는 구역을 숨김) — QA BUG-025 */}
+      {filter === '환불 내역' && data.refunds.length === 0 && <EmptyState message="환불 내역이 없어요." />}
       {show('환불 내역') && data.refunds.length > 0 && (
         <section className="flex flex-col gap-1">
           <h2 className="text-sec">환불 내역</h2>
