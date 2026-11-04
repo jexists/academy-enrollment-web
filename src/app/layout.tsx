@@ -21,11 +21,13 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
       </head>
       <body className="flex min-h-full flex-col">
         <ToastProvider>
-          <AuthProvider>{children}</AuthProvider>
-          {/* 문의 챗봇: 모든 화면 오른쪽 아래. 경로를 읽으므로 Suspense로 감싼다 */}
-          <Suspense fallback={null}>
-            <ChatWidget />
-          </Suspense>
+          <AuthProvider>
+            {children}
+            {/* 문의 챗봇: 모든 화면 오른쪽 아래. 경로를 읽으므로 Suspense로 감싼다. 로그인한 사람이 바뀌면 대화를 비우려고 AuthProvider 안에 둔다 */}
+            <Suspense fallback={null}>
+              <ChatWidget />
+            </Suspense>
+          </AuthProvider>
         </ToastProvider>
       </body>
     </html>
