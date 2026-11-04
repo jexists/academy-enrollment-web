@@ -146,31 +146,3 @@ export async function streamChat({ query, conversationId, signal, onDelta, onEnd
   }
   if (!finished && !signal.aborted) throw new ChatError(0, FALLBACK);
 }
-
-/** 학원 안내 문서 slug → 제목 (web/content/guide의 NN-slug.md) */
-const GUIDE_TITLES: Record<string, string> = {
-  terms: '한빛수학 이용약관',
-  fees: '수강료 및 환불 규정',
-  attendance: '출결 및 보강 규정',
-  privacy: '개인정보 처리 안내',
-  schedule: '반 및 수업 시간표',
-  teachers: '강사진 소개',
-  exams: '시험 성적 안내',
-  counsel: '학부모 상담 안내',
-  'web-guide': '웹사이트 사용 안내',
-  faq: '자주 묻는 질문',
-};
-const GUIDE_SLUGS = Object.keys(GUIDE_TITLES);
-
-/** 근거 문서 이름 → 화면에 보일 제목 (학원 안내 문서가 아니면 이름 그대로) */
-export function guideTitle(documentName: string): string {
-  const slug = /^\d{2}-([a-z-]+)/i.exec(documentName.trim())?.[1].toLowerCase();
-  return (slug && GUIDE_TITLES[slug]) || documentName;
-}
-
-/** 근거 문서 이름이 학원 안내 문서면 /guide/<slug> 주소를 돌려준다 */
-export function guideHref(documentName: string): string | null {
-  const match = /^\d{2}-([a-z-]+)(?:\.(?:md|pdf|txt))?$/i.exec(documentName.trim());
-  const slug = match?.[1].toLowerCase();
-  return slug && GUIDE_SLUGS.includes(slug) ? `/guide/${slug}` : null;
-}

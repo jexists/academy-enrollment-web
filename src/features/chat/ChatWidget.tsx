@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
 import { Button } from '@/components/ui/Button';
@@ -8,8 +7,6 @@ import { TextArea } from '@/components/ui/TextArea';
 import { cn } from '@/lib/cn';
 import {
   ChatError,
-  guideHref,
-  guideTitle,
   readConversationId,
   streamChat,
   writeConversationId,
@@ -359,34 +356,7 @@ function Bubble({ message }: { message: ChatMessage }) {
       )}
       {message.error && <p className="text-meta text-err">{message.error}</p>}
       {!message.streaming && !message.error && !message.text && <p className="text-meta text-subtle">답을 멈췄어요.</p>}
-      {message.sources && message.sources.length > 0 && <Sources sources={message.sources} />}
+      {/* 근거는 화면에 보이지 않고 어드민 문의 기록에만 남는다 (결정42) */}
     </div>
-  );
-}
-
-function Sources({ sources }: { sources: ChatSource[] }) {
-  return (
-    <details className="group text-meta">
-      <summary className="cursor-pointer list-none py-1 text-subtle hover:text-fg">
-        근거 {sources.length}개 <span className="inline-block transition-transform group-open:rotate-180">▾</span>
-      </summary>
-      <ul className="mt-1 flex flex-col gap-2">
-        {sources.map((source, index) => {
-          const href = guideHref(source.document);
-          return (
-            <li key={`${source.document}-${index}`} className="rounded-control border border-line px-3 py-2">
-              {href ? (
-                <Link href={href} className="font-medium text-info underline underline-offset-2">
-                  {guideTitle(source.document)}
-                </Link>
-              ) : (
-                <span className="font-medium text-fg">{source.document}</span>
-              )}
-              {source.snippet && <p className="mt-1 text-muted">{source.snippet}</p>}
-            </li>
-          );
-        })}
-      </ul>
-    </details>
   );
 }
