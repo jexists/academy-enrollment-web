@@ -72,7 +72,7 @@ export function ChangePasswordForm() {
           label="새 비밀번호"
           type="password"
           autoComplete="new-password"
-          hint="8자 이상"
+          placeholder="8자 이상"
           {...field('newPassword')}
         />
         <TextField label="새 비밀번호 확인" type="password" autoComplete="new-password" {...field('confirm')} />

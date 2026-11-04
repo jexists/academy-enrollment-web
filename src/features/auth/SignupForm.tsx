@@ -78,7 +78,7 @@ export function SignupForm() {
             label="비밀번호"
             type="password"
             autoComplete="new-password"
-            hint="8자 이상"
+            placeholder="8자 이상"
             value={form.password}
             onChange={set('password')}
             error={errors.password}
