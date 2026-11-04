@@ -9,6 +9,7 @@ import { cn } from '@/lib/cn';
 import {
   ChatError,
   guideHref,
+  guideTitle,
   readConversationId,
   streamChat,
   writeConversationId,
@@ -296,7 +297,7 @@ function Sources({ sources }: { sources: ChatSource[] }) {
             <li key={`${source.document}-${index}`} className="rounded-control border border-line px-3 py-2">
               {href ? (
                 <Link href={href} className="font-medium text-info underline underline-offset-2">
-                  {source.document}
+                  {guideTitle(source.document)}
                 </Link>
               ) : (
                 <span className="font-medium text-fg">{source.document}</span>
