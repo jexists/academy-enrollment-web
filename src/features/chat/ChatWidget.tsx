@@ -15,6 +15,7 @@ import {
   writeConversationId,
   type ChatSource,
 } from '@/lib/chat-stream';
+import { createTypewriter, type Typewriter } from '@/lib/typewriter';
 
 interface ChatMessage {
   id: number;
@@ -84,6 +85,7 @@ export function ChatWidget() {
   const [streaming, setStreaming] = useState(false);
   const [unavailable, setUnavailable] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
+  const typerRef = useRef<Typewriter | null>(null);
   const nextId = useRef(1);
   const listRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -127,7 +129,13 @@ export function ChatWidget() {
   }, [open]);
 
   // 화면을 떠나면 받던 답을 멈춘다
-  useEffect(() => () => abortRef.current?.abort(), []);
+  useEffect(
+    () => () => {
+      abortRef.current?.abort();
+      typerRef.current?.cancel();
+    },
+    [],
+  );
 
   const updateBot = (id: number, change: (message: ChatMessage) => ChatMessage) =>
     setMessages((list) => list.map((message) => (message.id === id ? change(message) : message)));
@@ -149,20 +157,28 @@ export function ChatWidget() {
     setAtBottom(true);
     const controller = new AbortController();
     abortRef.current = controller;
+    // 받은 글자는 타자 치듯 조금씩 보여 준다
+    const typer = createTypewriter((chunk) => updateBot(botId, (m) => ({ ...m, text: m.text + chunk })));
+    typerRef.current = typer;
+    let sources: ChatSource[] | undefined;
 
     try {
       await streamChat({
         query,
         conversationId: readConversationId(),
         signal: controller.signal,
-        onDelta: (delta) => updateBot(botId, (m) => ({ ...m, text: m.text + delta })),
-        onEnd: ({ conversationId, sources }) => {
+        onDelta: (delta) => typer.push(delta),
+        onEnd: ({ conversationId, sources: found }) => {
           if (conversationId) writeConversationId(conversationId);
-          updateBot(botId, (m) => ({ ...m, sources, streaming: false }));
+          sources = found;
         },
       });
-      updateBot(botId, (m) => ({ ...m, streaming: false }));
+      // 멈춤을 눌렀으면 받은 데까지 바로 보이고, 아니면 다 쳐질 때까지 기다린다
+      if (controller.signal.aborted) typer.flush();
+      else await typer.drained();
+      updateBot(botId, (m) => ({ ...m, sources, streaming: false }));
     } catch (error) {
+      typer.flush();
       if (error instanceof ChatError && error.status === 503) {
         setUnavailable(true);
         // 준비 중이면 빈 답 말풍선은 지우고 안내만 보인다
@@ -173,16 +189,19 @@ export function ChatWidget() {
       }
     } finally {
       if (abortRef.current === controller) abortRef.current = null;
+      if (typerRef.current === typer) typerRef.current = null;
       setStreaming(false);
     }
   }
 
   function stop() {
     abortRef.current?.abort();
+    typerRef.current?.flush();
   }
 
   function reset() {
     abortRef.current?.abort();
+    typerRef.current?.cancel();
     writeConversationId(null);
     setMessages([]);
     setUnavailable(false);
@@ -280,7 +299,7 @@ export function ChatWidget() {
               )}
             </div>
 
-            {/* 위로 올려 읽는 중: 답을 쓰는 동안은 점 3개가 따라오고, 끝나면 아래 화살표 */}
+            {/* 위로 올려 읽는 중: 답을 쓰는 동안은 점 3개만 따라오고, 끝나면 아래 화살표 */}
             {!atBottom && messages.length > 0 && (
               <button
                 type="button"
@@ -288,11 +307,10 @@ export function ChatWidget() {
                 aria-label={streaming ? '답을 쓰고 있어요. 맨 아래로' : '맨 아래로'}
                 className={cn(
                   'absolute bottom-3 left-1/2 flex h-9 -translate-x-1/2 animate-rise items-center justify-center gap-2 rounded-full border border-line2 bg-canvas text-muted transition-colors hover:text-fg',
-                  streaming ? 'px-3' : 'w-9',
+                  streaming ? 'px-3.5' : 'w-9',
                 )}
               >
-                {streaming && <TypingDots />}
-                <Glyph d={ICON.down} className="size-4" />
+                {streaming ? <TypingDots /> : <Glyph d={ICON.down} className="size-4" />}
               </button>
             )}
             </div>
