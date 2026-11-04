@@ -76,7 +76,7 @@ export function RefundScreen() {
       </Button>
       <p className="text-meta text-subtle">
         학원이 그만둔 날을 확인하면 환불액이 확정되고 수강이 끝나요. 지난 수업에는 결석한 수업도 포함하고 휴강은 세지 않아요.{' '}
-        <Link href="/terms#refund" className="underline">
+        <Link href="/guide/fees#a-5" className="underline">
           환불 규정 보기
         </Link>
       </p>

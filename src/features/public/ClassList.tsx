@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { EmptyState, Skeleton } from '@/components/ui/states';
@@ -9,6 +10,7 @@ import { scheduleLabel, won } from '@/lib/format';
 interface PublicClass {
   id: number;
   name: string;
+  teacherId: number;
   teacherName: string;
   monthlyFee: number;
   remaining: number;
@@ -45,7 +47,10 @@ export function ClassList() {
           <div className="flex flex-1 flex-col gap-0.5">
             <span className="text-body font-bold">{cls.name}</span>
             <span className="text-meta text-muted">
-              {scheduleLabel(cls.schedules)} · {cls.teacherName}
+              {scheduleLabel(cls.schedules)} ·{' '}
+              <Link href={`/teachers#t-${cls.teacherId}`} className="underline decoration-line2 underline-offset-2 hover:text-fg">
+                {cls.teacherName}
+              </Link>
             </span>
           </div>
           <div className="flex flex-col items-end gap-1">
