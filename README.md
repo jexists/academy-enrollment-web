@@ -34,6 +34,10 @@
 
 ## 화면 캡처
 
+<a href="docs/%ED%95%9C%EB%B9%9B%EC%88%98%ED%95%99-%EB%8D%B0%EB%AA%A8.mp4"><img src="docs/captures/00-demo-video.png" alt="한빛수학 시연 영상 첫 화면" width="480"></a>
+
+[시연 영상 보기](<docs/%ED%95%9C%EB%B9%9B%EC%88%98%ED%95%99-%EB%8D%B0%EB%AA%A8.mp4>) (1분 41초, 음성 포함)
+
 [자녀 요약](docs/captures/05-web-home-summary.png) &nbsp;·&nbsp; [수강 신청](docs/captures/08-web-enroll.png) &nbsp;·&nbsp; [보강 신청](docs/captures/11-web-makeup-B11.png) &nbsp;·&nbsp; [환불 신청](docs/captures/12-web-refund-D20.png) &nbsp;·&nbsp; [문의 챗봇](docs/captures/49-web-chat-answer.png)
 
 전체 캡처 폴더: [academy-enrollment-web/docs/captures](docs/captures/)
