@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>한빛수학 발표</title>
+<!-- 글꼴: 한글 Pretendard, 테이블 이름·숫자는 JetBrains Mono -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&display=swap" />
+<style>
+/* ===========================================
+   THEME TOKENS — 라이트(A 그리드 노트) / 다크(B 나이트 데스크)
+   한빛수학 앱 토큰(docs/design/tokens.md)의 주황 #ff5d00을 강조색으로 쓴다
+   =========================================== */
+:root, html[data-theme="light"] {
+  --bg: #ffffff;
+  --grid-soft: #f6f6f9;
+  --grid: #efeff2;
+  --ink: #0c0c0c;
+  --muted: #55555c;
+  --subtle: #8b8b92;
+  --line: #e4e4e9;
+  --card: #ffffff;
+  --card2: #f6f6f8;
+  --accent: #ff5d00;
+  --accent-ink: #d94f00;
+  --accent-c: #fff1e8;
+  --ok: #078641; --ok-c: #dbfce1;
+  --err: #e30f32; --err-c: #fcf1f0;
+  --info: #376dfa; --info-c: #eef2fe;
+  --warn: #cb8409; --warn-c: #fcf2e7;
+  --node-line: #1a1a1a;
+  --edge: #2b2b2f;
+  --zone: #f6f6f8;
+  --zone-line: #dedee4;
+  --shot-line: #dcdce2;
+  --bar-bg: rgba(255,255,255,.92);
+}
+html[data-theme="dark"] {
+  --bg: #101318;
+  --grid-soft: #171c24;
+  --grid: #171b22;
+  --ink: #f2f3f5;
+  --muted: #a4abb6;
+  --subtle: #737b87;
+  --line: #262c37;
+  --card: #161a21;
+  --card2: #1b2029;
+  --accent: #ff7a2e;
+  --accent-ink: #ff8f4f;
+  --accent-c: #2b1d14;
+  --ok: #3fcf86; --ok-c: #11291d;
+  --err: #ff5b70; --err-c: #2e1519;
+  --info: #79a0ff; --info-c: #151d33;
+  --warn: #f0b04a; --warn-c: #2c2213;
+  --node-line: #8e97a5;
+  --edge: #a9b1bd;
+  --zone: #151920;
+  --zone-line: #2b313c;
+  --shot-line: #2b313c;
+  --bar-bg: rgba(22,26,33,.92);
+}
+
+/* ===========================================
+   BASE
+   =========================================== */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* --- viewport-base.css (frontend-slides 필수 기본값) 시작 --- */
+html, body { height: 100%; overflow-x: hidden; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+.slide { width: 100vw; height: 100vh; height: 100dvh; overflow: hidden; scroll-snap-align: start; display: flex; flex-direction: column; position: relative; }
+.slide-content { flex: 1; display: flex; flex-direction: column; justify-content: center; max-height: 100%; overflow: hidden; padding: var(--slide-padding); }
+:root {
+  --title-size: clamp(1.5rem, 5vw, 4rem);
+  --h2-size: clamp(1.25rem, 3.5vw, 2.5rem);
+  --h3-size: clamp(1rem, 2.5vw, 1.75rem);
+  --body-size: clamp(0.75rem, 1.5vw, 1.125rem);
+  --small-size: clamp(0.65rem, 1vw, 0.875rem);
+  --slide-padding: clamp(1rem, 4vw, 4rem);
+  --content-gap: clamp(0.5rem, 2vw, 2rem);
+  --element-gap: clamp(0.25rem, 1vw, 1rem);
+}
+.card, .container, .content-box { max-width: min(90vw, 1000px); max-height: min(80vh, 700px); }
+.feature-list, .bullet-list { gap: clamp(0.4rem, 1vh, 1rem); }
+.feature-list li, .bullet-list li { font-size: var(--body-size); line-height: 1.4; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr)); gap: clamp(0.5rem, 1.5vw, 1rem); }
+img, .image-container { max-width: 100%; max-height: min(50vh, 400px); object-fit: contain; }
+@media (max-height: 700px) { :root { --slide-padding: clamp(0.75rem, 3vw, 2rem); --content-gap: clamp(0.4rem, 1.5vw, 1rem); --title-size: clamp(1.25rem, 4.5vw, 2.5rem); --h2-size: clamp(1rem, 3vw, 1.75rem); } }
+@media (max-height: 600px) { :root { --slide-padding: clamp(0.5rem, 2.5vw, 1.5rem); --content-gap: clamp(0.3rem, 1vw, 0.75rem); --title-size: clamp(1.1rem, 4vw, 2rem); --body-size: clamp(0.7rem, 1.2vw, 0.95rem); } .nav-dots, .keyboard-hint, .decorative { display: none; } }
+@media (max-height: 500px) { :root { --slide-padding: clamp(0.4rem, 2vw, 1rem); --title-size: clamp(1rem, 3.5vw, 1.5rem); --h2-size: clamp(0.9rem, 2.5vw, 1.25rem); --body-size: clamp(0.65rem, 1vw, 0.85rem); } }
+@media (max-width: 600px) { :root { --title-size: clamp(1.25rem, 7vw, 2.5rem); } .grid { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; } html { scroll-behavior: auto; } }
+/* --- viewport-base.css 끝 --- */
+
+/* ===========================================
+   16:9 STAGE — 1920×1080 무대를 화면에 맞게 비례 축소/확대
+   viewport-base의 세로 스크롤 방식 대신, 한 화면에 한 장만 보이는 고정 무대를 쓴다.
+   (무대 크기가 고정이라 글자 크기는 1920 기준 px로 정하고, 화면 맞춤은 transform이 맡는다)
+   =========================================== */
+html, body { overflow: hidden; scroll-snap-type: none; background: #000; }
+body { font-family: 'Pretendard Variable', Pretendard, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+#viewport { position: fixed; inset: 0; display: grid; place-items: center; background: #000; }
+html[data-theme="light"] #viewport { background: #d9d9de; }
+#stage { width: 1920px; height: 1080px; position: absolute; left: 50%; top: 50%; transform-origin: center center; overflow: hidden; background: var(--bg); }
+#stage .slide {
+  position: absolute; inset: 0; width: 1920px; height: 1080px;
+  padding: 88px 120px 96px; display: flex; flex-direction: column;
+  background-color: var(--bg);
+  opacity: 0; visibility: hidden; transform: translateX(28px);
+  transition: opacity .32s ease, transform .32s cubic-bezier(.16,1,.3,1), visibility 0s linear .32s;
+}
+#stage .slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .32s ease, transform .32s cubic-bezier(.16,1,.3,1); }
+#stage .slide.before { transform: translateX(-28px); }
+html[data-theme="dark"] #stage .slide { background-image: radial-gradient(1100px 700px at 88% 0%, #1a2130 0%, transparent 62%); }
+#stage img { max-height: none; }
+
+/* 등장 애니메이션: 활성 슬라이드의 .r 요소가 차례로 */
+.r { opacity: 0; transform: translateY(18px); }
+.slide.active .r { animation: rise .6s cubic-bezier(.16,1,.3,1) forwards; }
+.slide.active .r:nth-child(2) { animation-delay: .06s; } .slide.active .r:nth-child(3) { animation-delay: .12s; }
+.slide.active .r:nth-child(4) { animation-delay: .18s; } .slide.active .r:nth-child(5) { animation-delay: .24s; }
+.slide.active .r:nth-child(6) { animation-delay: .3s; }
+@keyframes rise { to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .r { opacity: 1; transform: none; } .slide.active .r { animation: none; } }
+
+/* ===========================================
+   TYPOGRAPHY & COMMON PARTS
+   =========================================== */
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+.head { display: flex; align-items: flex-end; justify-content: space-between; gap: 40px; margin-bottom: 40px; }
+.kicker { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: var(--accent); letter-spacing: .06em; margin-bottom: 14px; }
+h2.title { font-size: 54px; line-height: 1.15; font-weight: 800; letter-spacing: -.025em; }
+.lead { font-size: 30px; line-height: 1.45; color: var(--muted); font-weight: 500; }
+.note { font-size: 21px; color: var(--subtle); line-height: 1.5; }
+.body { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.pageno { position: absolute; right: 120px; bottom: 40px; font: 500 18px 'JetBrains Mono', monospace; color: var(--subtle); }
+.section-tag { position: absolute; left: 120px; bottom: 40px; font-size: 18px; color: var(--subtle); }
+.accent { color: var(--accent); }
+.hl { background: linear-gradient(transparent 62%, var(--accent-c) 62%); }
+.row { display: flex; gap: 48px; }
+.col { display: flex; flex-direction: column; }
+.row.body { flex-direction: row; } /* .body가 세로 방향을 덮어쓰지 않게 */
+.center-y { justify-content: center; }
+.f1 { flex: 1; min-width: 0; }
+
+.bullets { list-style: none; display: flex; flex-direction: column; gap: 22px; }
+.bullets li { font-size: 28px; line-height: 1.45; padding-left: 36px; position: relative; }
+.bullets li::before { content: ""; position: absolute; left: 4px; top: 17px; width: 12px; height: 12px; background: var(--accent); border-radius: 2px; }
+.bullets li .sub { display: block; font-size: 22px; color: var(--muted); margin-top: 4px; }
+
+.panel { background: var(--card); border: 1.5px solid var(--line); border-radius: 14px; padding: 32px 36px; }
+.panel.tint { background: var(--card2); }
+.badge { display: inline-flex; align-items: center; font: 700 17px 'JetBrains Mono', monospace; padding: 5px 12px; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap; }
+.b-ok { color: var(--ok); } .b-err { color: var(--err); } .b-info { color: var(--info); } .b-warn { color: var(--warn); } .b-acc { color: var(--accent); }
+
+/* 표 */
+table.t { width: 100%; border-collapse: collapse; font-size: 25px; }
+table.t th { text-align: left; font-size: 19px; font-weight: 700; color: var(--subtle); padding: 0 20px 14px; border-bottom: 2px solid var(--ink); letter-spacing: .02em; }
+table.t td { padding: 17px 20px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.4; }
+table.t td.k { font-weight: 700; white-space: nowrap; }
+table.t td.q { color: var(--muted); }
+table.t tr.hot td { background: var(--accent-c); }
+
+/* 스크린샷 */
+.shot { border: 1.5px solid var(--shot-line); border-radius: 12px; overflow: hidden; background: #fff; }
+/* 너비에 맞추고 위쪽부터 보여 줌 (상자 높이를 넘는 아래는 잘림) */
+.shot img { display: block; width: 100%; height: auto; }
+/* DBeaver 캡처: 왼쪽 오류 칸만 크게 */
+.shot.zoom-left img { width: 190%; max-width: none; }
+.shot.native img { width: auto; max-width: none; }
+.cap { font-size: 21px; margin-top: 12px; line-height: 1.35; }
+.cap b { font-weight: 700; }
+.cap .code { font: 700 16px 'JetBrains Mono', monospace; color: var(--accent); margin-right: 6px; }
+
+/* ===========================================
+   ERD SVG — 칼럼 없이 관계만. 색은 테마 변수를 따른다
+   =========================================== */
+.erd { width: 100%; height: 100%; display: block; }
+.erd .node rect { fill: var(--card); stroke: var(--node-line); stroke-width: 2.5; }
+.erd .node.hot rect { stroke: var(--accent); stroke-width: 4; fill: var(--accent-c); }
+.erd .tname { font: 700 25px 'JetBrains Mono', monospace; fill: var(--ink); }
+.erd .tko { font-size: 21px; fill: var(--muted); }
+.erd .edge { fill: none; stroke: var(--edge); stroke-width: 2.6; }
+.erd .edge.thick { stroke-width: 4; }
+.erd .arrowhead { fill: var(--edge); }
+.erd .pill rect { fill: var(--bg); stroke: var(--edge); stroke-width: 1.6; }
+.erd .pill text { font-size: 17px; font-weight: 700; fill: var(--ink); text-anchor: middle; }
+.erd .zone rect { fill: var(--zone); stroke: var(--zone-line); stroke-width: 1.5; }
+.erd .zone text { font-size: 25px; font-weight: 800; fill: var(--muted); }
+.erd .chip rect { fill: var(--card); stroke: var(--zone-line); stroke-width: 1.5; }
+.erd .chip.hot rect { stroke: var(--accent); stroke-width: 3; }
+.erd .cname { font: 700 20px 'JetBrains Mono', monospace; fill: var(--ink); }
+.erd .cko { font-size: 17px; fill: var(--muted); text-anchor: end; }
+
+/* ===========================================
+   DECORATION — 표지와 마지막 장만: 연한 모눈 + 주황 원 (내용 뒤에 깔림)
+   =========================================== */
+#stage .slide.deco { background-image: linear-gradient(var(--grid-soft) 1px, transparent 1px), linear-gradient(90deg, var(--grid-soft) 1px, transparent 1px); background-size: 64px 64px; }
+html[data-theme="dark"] #stage .slide.deco { background-image: radial-gradient(1100px 700px at 88% 0%, #1a2130 0%, transparent 62%), linear-gradient(var(--grid-soft) 1px, transparent 1px), linear-gradient(90deg, var(--grid-soft) 1px, transparent 1px); background-size: auto, 64px 64px, 64px 64px; }
+.deco-art { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+/* 마우스를 따라 움직이는 은은한 주황 빛 (JS가 --gx·--gy를 바꿈) */
+.deco-art .glow { position: absolute; width: 900px; height: 900px; border-radius: 50%; left: calc(var(--gx, 1500px) - 450px); top: calc(var(--gy, 760px) - 450px); background: radial-gradient(circle, var(--accent-c) 0%, transparent 65%); opacity: .9; transition: left .6s ease-out, top .6s ease-out; }
+html[data-theme="dark"] .deco-art .glow { background: radial-gradient(circle, rgba(255,122,46,.16) 0%, transparent 65%); }
+
+.slide.deco .inner, .slide.deco .grid3, .slide.deco .accounts, .slide.deco > p { position: relative; z-index: 1; }
+.slide.deco .apps, .slide.deco .bar { z-index: 1; }
+
+/* ===========================================
+   SLIDE 01 — 표지
+   =========================================== */
+.cover { justify-content: center; }
+.cover .bar { position: absolute; left: 120px; top: 50%; transform: translateY(-62%); width: 14px; height: 330px; background: var(--accent); }
+.cover .inner { padding-left: 64px; display: flex; flex-direction: column; gap: 28px; }
+.cover h1 { font-size: 112px; line-height: 1.05; font-weight: 800; letter-spacing: -.035em; }
+.cover .sub { font-size: 32px; color: var(--muted); }
+.cover .who { font: 500 24px 'JetBrains Mono', monospace; color: var(--muted); margin-top: 10px; }
+.cover .apps { position: absolute; right: 120px; top: 50%; transform: translateY(-50%); width: 620px; display: flex; flex-direction: column; gap: 16px; }
+.app-row { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 18px; padding: 22px 26px; background: var(--card); border: 1.5px solid var(--line); border-radius: 14px; }
+.app-row .nm { font-size: 22px; font-weight: 800; }
+.app-row.qr-row { grid-template-columns: 1fr 160px; padding: 20px 20px 20px 28px; }
+.app-row.qr-row .nm { font-size: 26px; margin-bottom: 6px; }
+.qr-mini { background: #fff; border-radius: 10px; padding: 6px; line-height: 0; }
+.qr-mini svg { width: 100%; height: auto; display: block; }
+.app-row .ur { font: 500 17px 'JetBrains Mono', monospace; color: var(--muted); word-break: break-all; }
+.app-row .tech { font-size: 17px; color: var(--subtle); margin-top: 4px; }
+.theme-pick { display: inline-flex; gap: 0; border: 2px solid var(--ink); border-radius: 999px; overflow: hidden; width: max-content; margin-top: 18px; }
+.theme-pick button { font: 700 22px 'Pretendard Variable', sans-serif; padding: 12px 28px; background: transparent; color: var(--ink); border: 0; cursor: pointer; }
+.theme-pick button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.keyhint { font-size: 19px; color: var(--subtle); margin-top: 6px; }
+
+/* ===========================================
+   SLIDE 02 — 목차
+   =========================================== */
+.toc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 56px; align-items: start; }
+.toc-col { display: flex; flex-direction: column; gap: 34px; }
+.toc-group h3 { font-size: 22px; font-weight: 800; color: var(--accent); margin-bottom: 12px; display: flex; gap: 12px; align-items: baseline; }
+.toc-group h3 .n { font-family: 'JetBrains Mono', monospace; }
+.toc-link { display: flex; gap: 16px; align-items: baseline; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 12px 4px; font: 500 25px 'Pretendard Variable', sans-serif; color: var(--ink); cursor: pointer; }
+.toc-link .no { font: 500 18px 'JetBrains Mono', monospace; color: var(--subtle); width: 30px; flex: none; }
+.toc-link:hover { color: var(--accent); }
+.toc-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ===========================================
+   SLIDE 03 — 고른 이유
+   =========================================== */
+.pick5 { display: flex; gap: 14px; margin-top: 8px; }
+.pick5 span { font-size: 22px; padding: 12px 20px; border: 1.5px solid var(--line); border-radius: 999px; color: var(--subtle); }
+.pick5 span.on { border-color: var(--accent); background: var(--accent); color: #fff; font-weight: 700; }
+.bigquote { font-size: 50px; line-height: 1.3; font-weight: 800; letter-spacing: -.02em; }
+
+/* 요구사항 — 노션 번호 칩 */
+.req-tag { font: 700 20px 'JetBrains Mono', monospace; }
+.rq { gap: 0; justify-content: center; }
+.rq-row { display: grid; grid-template-columns: 220px 1fr; gap: 24px; align-items: center; padding: 18px 16px; border-bottom: 1px solid var(--line); }
+.rq-row:first-child { border-top: 2px solid var(--ink); }
+.rq-row.hot { background: var(--accent-c); }
+.rq-h b { font: 800 30px 'JetBrains Mono', monospace; display: block; }
+.rq-h span { font-size: 20px; color: var(--muted); }
+.rq-list { display: flex; flex-wrap: wrap; gap: 10px 12px; }
+.rq { --chip-bg: var(--card); }
+.rq span.rq { display: inline-flex; align-items: center; gap: 10px; font-size: 22px; padding: 8px 16px 8px 8px; border: 1.5px solid var(--line); border-radius: 999px; background: var(--card); }
+.rq span.rq b { font: 700 17px 'JetBrains Mono', monospace; color: var(--bg); background: var(--ink); border-radius: 999px; padding: 3px 10px; }
+.rq-row.hot span.rq b { background: var(--accent); color: #fff; }
+.rq span.rq.off { opacity: .45; border-style: dashed; }
+.rq span.rq.off b { background: var(--subtle); }
+
+/* ===========================================
+   SLIDE 07 — 시스템 구조
+   =========================================== */
+.arch { position: relative; flex: 1; }
+.arch .box { position: absolute; background: var(--card); border: 2.5px solid var(--node-line); border-radius: 16px; padding: 24px 28px; }
+.arch .box.hot { border-color: var(--accent); background: var(--accent-c); }
+.arch .box h4 { font-size: 30px; font-weight: 800; }
+.arch .box .t { font: 500 18px 'JetBrains Mono', monospace; color: var(--muted); margin-top: 4px; }
+.arch .box .d { font-size: 21px; color: var(--muted); margin-top: 12px; line-height: 1.45; }
+.arch .box .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.arch .box .chips span { font-size: 18px; padding: 6px 12px; border-radius: 8px; background: var(--card2); border: 1px solid var(--line); }
+.arch svg.wires { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.arch .wire { fill: none; stroke: var(--edge); stroke-width: 3; }
+.arch .wire-ah { fill: var(--edge); }
+.arch .wl { position: absolute; font: 700 17px 'JetBrains Mono', monospace; background: var(--bg); border: 1.5px solid var(--edge); border-radius: 999px; padding: 4px 12px; white-space: nowrap; transform: translate(-50%, -50%); }
+
+/* 흐름 (수업 구조, 챗봇) */
+.flow { display: flex; align-items: stretch; gap: 0; }
+.flow .st { flex: 1; background: var(--card); border: 2px solid var(--node-line); border-radius: 14px; padding: 22px 24px; }
+.flow .st.hot { border-color: var(--accent); background: var(--accent-c); }
+.flow .st .nm { font: 700 20px 'JetBrains Mono', monospace; color: var(--muted); }
+.flow .st .big { font-size: 30px; font-weight: 800; margin-top: 6px; }
+.flow .st .ex { font-size: 21px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+.flow .ar { width: 64px; flex: none; display: grid; place-items: center; }
+.flow .ar svg { width: 44px; height: 24px; }
+.flow .ar path { fill: var(--edge); }
+
+/* 테이블 한 줄 */
+.tbl-lines { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 56px; }
+.tbl-lines .grp h4 { font-size: 22px; font-weight: 800; color: var(--accent); margin-bottom: 6px; }
+.tbl-lines .ln { display: grid; grid-template-columns: 330px 1fr; gap: 16px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 21px; line-height: 1.38; }
+.tbl-lines .ln .n { font: 700 18px 'JetBrains Mono', monospace; padding-top: 2px; }
+
+/* 2열 비교 */
+.vs { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; flex: 1; min-height: 0; }
+.vs .side h3 { font-size: 30px; font-weight: 800; display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+.vs .side .why { font-size: 21px; color: var(--muted); margin-bottom: 18px; }
+.vs .item { display: grid; grid-template-columns: 1fr; padding: 15px 0; border-bottom: 1px solid var(--line); }
+.vs .item .w { font-size: 25px; font-weight: 700; }
+.vs .item .h { font-size: 20px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+.vs .item .h code { font: 700 17px 'JetBrains Mono', monospace; color: var(--accent-ink); }
+
+/* 숫자 띠 */
+.stats { display: flex; gap: 0; border: 1.5px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--card); }
+.stats div { flex: 1; padding: 20px 26px; border-right: 1.5px solid var(--line); }
+.stats div:last-child { border-right: 0; }
+.stats b { display: block; font: 700 40px 'JetBrains Mono', monospace; }
+.stats span { font-size: 19px; color: var(--muted); }
+
+/* 시간 순 문제 해결 */
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.steps .s { border-top: 5px solid var(--line); padding-top: 18px; }
+.steps .s.hot { border-top-color: var(--accent); }
+.steps .s .no { font: 700 20px 'JetBrains Mono', monospace; color: var(--subtle); }
+.steps .s .w { font-size: 27px; font-weight: 800; margin-top: 8px; line-height: 1.3; }
+.steps .s .h { font-size: 21px; color: var(--muted); margin-top: 10px; line-height: 1.45; }
+
+/* ===========================================
+   DEMO SLIDES — 위쪽 얇은 머리 + 큰 iframe
+   iframe에 포커스가 가면 키보드가 부모에 오지 않으므로 이동 버튼을 머리에 둔다
+   =========================================== */
+#stage .slide.demo { padding: 0; background-image: none; }
+.demo-head { height: 96px; flex: none; display: flex; align-items: center; gap: 24px; padding: 0 32px; border-bottom: 1.5px solid var(--line); background: var(--bg); }
+.demo-head .ttl { font-size: 32px; font-weight: 800; }
+.demo-head .subt { font-size: 24px; color: var(--accent); font-weight: 700; }
+.demo-head .url { font: 500 18px 'JetBrains Mono', monospace; color: var(--subtle); }
+.demo-head .sp { flex: 1; }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 700 20px 'Pretendard Variable', sans-serif; height: 52px; padding: 0 20px; border-radius: 10px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); cursor: pointer; text-decoration: none; }
+.btn:hover { border-color: var(--ink); }
+.btn.pri { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.frame-wrap { position: relative; flex: 1; background: #fff; }
+.frame-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; background: #fff; }
+.frame-state { position: absolute; inset: 0; display: grid; place-items: center; background: var(--bg); color: var(--muted); font-size: 26px; text-align: center; line-height: 1.6; pointer-events: none; transition: opacity .3s; }
+.frame-state.hide { opacity: 0; }
+.frame-state .spin { width: 44px; height: 44px; border: 4px solid var(--line); border-top-color: var(--accent); border-radius: 50%; margin: 0 auto 18px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.frame-tip { position: absolute; left: 24px; bottom: 20px; font-size: 18px; padding: 10px 16px; border-radius: 10px; background: var(--bar-bg); color: var(--muted); border: 1px solid var(--line); pointer-events: none; transition: opacity .4s; }
+
+
+/* ===========================================
+   SLIDE 27 — 감사합니다 + QR + 체험 계정
+   QR은 빌드 때 만든 SVG(tools/svg/qr-*.svg)를 넣었다 — 실행 중 외부 라이브러리 없음
+   =========================================== */
+.thanks { justify-content: center; }
+.thanks .grid3 { display: grid; grid-template-columns: 1fr 360px 360px; gap: 56px; align-items: center; }
+.thanks h1 { font-size: 120px; font-weight: 800; letter-spacing: -.035em; line-height: 1.05; }
+.qr-card { background: #fff; border-radius: 18px; padding: 22px; border: 1.5px solid var(--line); text-align: center; color: #0c0c0c; }
+.qr-card svg { width: 100%; height: auto; display: block; }
+.qr-card .nm { font-size: 26px; font-weight: 800; margin-top: 8px; }
+.qr-card .u { font: 500 13px 'JetBrains Mono', monospace; color: #55555c; margin-top: 4px; word-break: break-all; }
+.accounts { margin-top: 44px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.acct { border: 1.5px solid var(--line); border-radius: 14px; padding: 18px 22px; background: var(--card); }
+.acct .who { font-size: 22px; font-weight: 800; display: flex; gap: 10px; align-items: center; }
+.acct .id { font: 700 21px 'JetBrains Mono', monospace; margin-top: 8px; }
+.acct .pw { font: 500 19px 'JetBrains Mono', monospace; color: var(--muted); margin-top: 2px; }
+.acct .what { font-size: 18px; color: var(--subtle); margin-top: 6px; }
+
+/* ===========================================
+   CONTROLS — 진행 막대, 아래 오른쪽 조작 막대, 목차 덮개
+   =========================================== */
+#progress { position: fixed; left: 0; top: 0; height: 4px; background: var(--accent); width: 0; z-index: 30; transition: width .3s ease; }
+#bar { position: fixed; right: 18px; bottom: 16px; z-index: 30; display: flex; align-items: center; gap: 4px; padding: 6px; border-radius: 999px; background: var(--bar-bg); border: 1px solid var(--line); color: var(--ink); opacity: .35; transition: opacity .25s; backdrop-filter: blur(6px); }
+#bar:hover, #bar.awake { opacity: 1; }
+#bar button { width: 38px; height: 38px; border-radius: 999px; border: 0; background: transparent; color: inherit; cursor: pointer; display: grid; place-items: center; }
+#bar button:hover { background: var(--card2); }
+#bar svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#bar .count { font: 500 14px 'JetBrains Mono', monospace; padding: 0 8px; min-width: 76px; text-align: center; }
+body.on-demo #bar { display: none; }
+#toc { position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; }
+#toc.open { display: flex; }
+#toc .sheet { width: min(1100px, 92vw); max-height: 86vh; overflow: auto; background: var(--bg); color: var(--ink); border-radius: 16px; padding: 28px 32px; border: 1px solid var(--line); }
+#toc .sheet h3 { font-size: 22px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
+#toc .sheet h3 button { font-size: 15px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 6px 12px; cursor: pointer; }
+#toc ol { list-style: none; columns: 2; column-gap: 32px; }
+#toc li button { width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 9px 4px; font: 500 17px 'Pretendard Variable', sans-serif; color: var(--ink); cursor: pointer; display: flex; gap: 12px; }
+#toc li button .no { font-family: 'JetBrains Mono', monospace; color: var(--subtle); width: 26px; }
+#toc li button.cur { color: var(--accent); font-weight: 700; }
+#toc li button:hover { background: var(--card2); }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div id="viewport">
+<main id="stage" aria-live="polite">
+
+<!-- ================= 01 표지 ================= -->
+<section class="slide cover deco" data-title="표지">
+  <div class="deco-art" aria-hidden="true"><div class="glow"></div></div>
+  <div class="bar decorative"></div>
+  <div class="inner">
+    <div class="kicker r">AX CAMPUS 3회차 · DB 설계와 웹앱</div>
+    <h1 class="r">한빛수학<br>수강 신청과 출결</h1>
+    <p class="sub r">학부모·학생 웹 · 원장·강사 어드민 · 공용 백엔드 · 문의 챗봇</p>
+    <div class="who r">정주애 · 2026.11.06</div>
+    <div class="r">
+      <div class="theme-pick" role="group" aria-label="화면 모드">
+        <button type="button" data-theme-set="light">라이트</button>
+        <button type="button" data-theme-set="dark">다크</button>
+      </div>
+      <div class="keyhint">← → 이동 · T 목차 · F 전체 화면</div>
+    </div>
+  </div>
+  <div class="apps">
+    <div class="app-row qr-row r"><div><div class="nm">코어 웹</div><div class="ur">academy-enrollment-web.vercel.app</div><div class="tech">Next.js · Vercel · 학부모·학생</div></div><div class="qr-mini"><!--ERD:qr-web--><svg viewBox="0 0 350 350" class="qr"><g transform="scale(10)"><path fill="#fff" d="M0 0h35v35h-35z"/><path class="qrline" stroke="#000" d="M3 3.5h7m1 0h1m5 0h1m3 0h1m3 0h7m-29 1h1m5 0h1m5 0h1m1 0h1m1 0h1m1 0h1m3 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h6m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h3m3 0h3m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h4m1 0h1m2 0h2m3 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m1 0h1m4 0h2m1 0h1m1 0h1m3 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h1m1 0h1m3 0h1m2 0h1m1 0h1m-21 1h1m1 0h1m3 0h2m2 0h3m2 0h2m3 0h1m2 0h1m2 0h1m1 0h1m-28 1h2m1 0h2m2 0h3m4 0h3m1 0h2m1 0h2m3 0h2m-29 1h1m1 0h1m1 0h1m1 0h1m3 0h1m1 0h5m2 0h1m2 0h5m1 0h1m-29 1h1m1 0h1m1 0h2m1 0h2m1 0h1m3 0h2m3 0h3m1 0h1m1 0h1m-25 1h1m3 0h3m1 0h1m2 0h1m2 0h1m4 0h1m1 0h2m4 0h1m-24 1h1m2 0h2m1 0h2m1 0h3m1 0h3m1 0h2m3 0h2m-24 1h2m1 0h1m1 0h1m2 0h3m1 0h1m1 0h2m3 0h1m3 0h1m-29 1h2m1 0h1m1 0h1m1 0h2m1 0h3m3 0h1m2 0h1m1 0h1m-22 1h1m3 0h5m1 0h3m2 0h2m1 0h2m2 0h2m4 0h1m-28 1h1m2 0h1m3 0h1m3 0h1m1 0h4m1 0h5m2 0h3m-29 1h3m3 0h1m2 0h1m1 0h1m1 0h5m1 0h3m3 0h1m2 0h1m-24 1h1m1 0h1m1 0h3m3 0h2m1 0h4m-22 1h2m1 0h1m2 0h5m2 0h3m4 0h6m1 0h1m-20 1h3m1 0h1m2 0h2m1 0h1m1 0h1m3 0h3m1 0h1m-29 1h7m1 0h1m2 0h1m1 0h4m3 0h1m1 0h1m1 0h1m3 0h1m-29 1h1m5 0h1m3 0h3m2 0h2m1 0h3m3 0h1m2 0h1m-28 1h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h2m1 0h1m2 0h7m1 0h1m-28 1h1m1 0h3m1 0h1m2 0h1m5 0h1m3 0h1m4 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h2m2 0h1m1 0h4m2 0h2m2 0h1m2 0h2m-29 1h1m5 0h1m2 0h1m1 0h2m1 0h2m2 0h1m1 0h4m1 0h1m-26 1h7m1 0h1m3 0h5m3 0h1m1 0h4m2 0h1"/></g></svg><!--/ERD--></div></div>
+    <div class="app-row qr-row r"><div><div class="nm">어드민</div><div class="ur">academy-enrollment-admin.vercel.app</div><div class="tech">Next.js · Vercel · 원장·강사</div></div><div class="qr-mini"><!--ERD:qr-admin--><svg viewBox="0 0 390 390" class="qr"><g transform="scale(10)"><path fill="#fff" d="M0 0h39v39h-39z"/><path class="qrline" stroke="#000" d="M3 3.5h7m2 0h1m1 0h1m2 0h3m1 0h1m2 0h2m3 0h7m-33 1h1m5 0h1m1 0h1m5 0h2m1 0h1m1 0h3m4 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m3 0h1m2 0h9m4 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h1m1 0h2m2 0h3m2 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h5m5 0h1m1 0h1m5 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m5 0h2m1 0h1m1 0h1m5 0h2m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m1 0h4m1 0h1m2 0h3m1 0h3m-24 1h1m1 0h4m1 0h3m1 0h1m1 0h1m2 0h1m1 0h1m4 0h3m1 0h2m1 0h1m-30 1h1m1 0h1m2 0h1m1 0h1m3 0h2m3 0h2m3 0h1m4 0h4m-32 1h2m2 0h1m1 0h1m2 0h1m1 0h3m1 0h4m2 0h4m3 0h5m-32 1h2m1 0h1m3 0h1m1 0h4m1 0h1m1 0h1m1 0h2m2 0h1m1 0h1m1 0h1m2 0h1m1 0h1m-33 1h1m1 0h6m2 0h1m1 0h1m1 0h1m2 0h2m1 0h1m2 0h1m2 0h2m-28 1h2m2 0h1m2 0h2m1 0h1m2 0h3m1 0h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m-29 1h1m1 0h1m1 0h2m1 0h1m1 0h3m1 0h2m2 0h1m1 0h2m3 0h1m1 0h1m1 0h1m-31 1h2m6 0h2m1 0h1m2 0h2m4 0h1m4 0h1m1 0h1m2 0h1m1 0h1m-33 1h1m1 0h1m3 0h1m2 0h3m1 0h2m3 0h1m1 0h1m2 0h7m-29 1h2m1 0h2m1 0h1m2 0h2m1 0h1m1 0h8m3 0h1m1 0h1m1 0h1m1 0h1m-33 1h4m2 0h2m1 0h3m2 0h1m1 0h1m2 0h3m1 0h1m3 0h1m1 0h2m1 0h1m-33 1h1m2 0h1m5 0h1m3 0h1m2 0h3m1 0h1m3 0h2m2 0h3m1 0h1m-33 1h2m1 0h8m1 0h2m1 0h2m2 0h2m1 0h1m1 0h2m1 0h1m1 0h1m-30 1h1m2 0h1m3 0h1m3 0h1m1 0h1m1 0h2m1 0h2m1 0h3m3 0h3m-30 1h1m1 0h2m2 0h1m2 0h1m1 0h2m2 0h1m1 0h1m2 0h5m1 0h2m2 0h3m-33 1h1m1 0h1m4 0h1m1 0h3m2 0h4m7 0h1m1 0h2m1 0h3m-33 1h3m1 0h1m1 0h1m4 0h2m4 0h3m3 0h7m1 0h1m-24 1h1m1 0h2m3 0h1m1 0h2m2 0h1m2 0h1m3 0h1m1 0h2m-32 1h7m2 0h2m8 0h1m3 0h2m1 0h1m1 0h1m1 0h1m-31 1h1m5 0h1m1 0h1m2 0h1m1 0h4m1 0h2m2 0h3m3 0h5m-33 1h1m1 0h3m1 0h1m1 0h1m2 0h1m3 0h1m1 0h1m1 0h1m2 0h7m2 0h1m-32 1h1m1 0h3m1 0h1m1 0h3m1 0h3m1 0h2m1 0h2m1 0h1m2 0h1m1 0h1m1 0h2m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m1 0h1m2 0h5m1 0h1m1 0h3m1 0h2m1 0h3m-33 1h1m5 0h1m1 0h2m1 0h4m2 0h1m1 0h2m1 0h2m3 0h6m-33 1h7m3 0h1m2 0h4m1 0h2m3 0h6"/></g></svg><!--/ERD--></div></div>
+    <div class="app-row r"><div class="nm">백엔드</div><div><div class="ur">academy-enrollment-backend.onrender.com</div><div class="tech">NestJS · Render · PostgreSQL hw2</div></div></div>
+    <div class="note r" style="text-align:right">QR을 찍으면 바로 열려요 ↗</div>
+  </div>
+</section>
+
+<!-- ================= 02 목차 ================= -->
+<section class="slide" data-title="목차">
+  <div class="head"><div><div class="kicker">CONTENTS</div><h2 class="title">목차</h2></div><div class="note">항목을 누르면 그 장으로 이동해요</div></div>
+  <div class="toc-grid body" id="tocGrid"><!-- JS가 data-section으로 채운다 --></div>
+</section>
+
+<!-- ================= 03 고른 이유 ================= -->
+<section class="slide" data-title="한빛수학을 고른 이유" data-section="고객과 요구사항">
+  <div class="head"><div><div class="kicker">01 · 고객</div><h2 class="title">한빛수학을 고른 이유</h2></div></div>
+  <div class="body" style="justify-content:center;gap:56px">
+    <div class="pick5 r"><span>헬스장 힘찬짐</span><span>공유 오피스 모퉁이</span><span>반려동물 호텔 꼬리별</span><span class="on">수학학원 한빛수학</span><span>누리상사 법인차량</span></div>
+    <p class="bigquote r">나중에 <span class="hl">직접 쓸 수 있고</span>,<br>운영 구조를 <span class="hl">이해하기 쉬운</span> 교육 분야</p>
+    <ul class="bullets r" style="max-width:1400px">
+      <li>앞으로 가장 현실적인 진로가 강의·교육</li>
+      <li>과외·강의를 하게 되면 직접 쓸 수 있는 서비스</li>
+      <li>익숙한 학원 운영 방식 — 업무 파악보다 설계에 집중</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 04 요구사항 ================= -->
+<section class="slide" data-title="고객 요구사항 (구현한 것)" data-section="고객과 요구사항">
+  <div class="head"><div><div class="kicker">01 · 고객</div><h2 class="title">고객 요구사항 — 구현한 것</h2></div><div class="lead" style="font-size:24px;text-align:right">번호는 노션 과제의 요구사항 번호<br>공통·A~C는 필수, D는 골라서 4개</div></div>
+  <div class="rq body r"><div class="rq-row"><div class="rq-h"><b>공통</b><span>1~8</span></div><div class="rq-list"><span class="rq"><b>1</b>이메일 가입·로그인</span><span class="rq"><b>2</b>비밀번호 해시 저장</span><span class="rq"><b>3</b>로그인해야 이용</span><span class="rq"><b>4</b>자기 것만 보기</span><span class="rq"><b>5</b>직원은 원장이 생성</span><span class="rq"><b>6</b>원장·강사 역할</span><span class="rq"><b>7</b>사용 중지</span><span class="rq"><b>8</b>비밀번호 리셋</span></div></div><div class="rq-row"><div class="rq-h"><b>A</b><span>기본 정보</span></div><div class="rq-list"><span class="rq"><b>A1</b>학생·보호자 연락처</span><span class="rq"><b>A2</b>형제 가족</span><span class="rq"><b>A3</b>강사</span><span class="rq"><b>A4</b>반</span></div></div><div class="rq-row"><div class="rq-h"><b>B</b><span>수강과 규칙</span></div><div class="rq-list"><span class="rq"><b>B5</b>수강 기록</span><span class="rq"><b>B6</b>같은 반 중복 금지</span><span class="rq"><b>B7</b>정원</span><span class="rq"><b>B8</b>학년 일치</span><span class="rq"><b>B9</b>강사 시간 겹침</span><span class="rq"><b>B10</b>출결</span><span class="rq"><b>B11</b>다른 반 보강</span><span class="rq"><b>B12</b>월 납부</span></div></div><div class="rq-row"><div class="rq-h"><b>C</b><span>현황</span></div><div class="rq-list"><span class="rq"><b>C13</b>이번 달 출석률</span><span class="rq"><b>C14</b>보강 필요 학생</span><span class="rq"><b>C15</b>미납·형제 할인</span></div></div><div class="rq-row hot"><div class="rq-h"><b>D</b><span>골라서 더하기</span></div><div class="rq-list"><span class="rq"><b>D16</b>시험 성적</span><span class="rq"><b>D17</b>강사 주간 시간표</span><span class="rq"><b>D19</b>학부모 요약</span><span class="rq"><b>D20</b>환불 계산</span><span class="rq off"><b>D18</b>반별 출석률 비교 · 안 고름</span></div></div><div class="rq-row"><div class="rq-h"><b>선택</b><span>규정 챗봇</span></div><div class="rq-list"><span class="rq"><b>5-1</b>규정 문서·지식 (안내 10개)</span><span class="rq"><b>5-2</b>백엔드에서 Dify 부르기 (문의 챗봇)</span><span class="rq off"><b>5-3</b>검색 실험 · 이번엔 안 함</span></div></div><div class="rq-row"><div class="rq-h"><b>기타</b><span>요구사항 밖, 더 한 것</span></div><div class="rq-list"><span class="rq"><b>+</b>휴강·보충 수업</span><span class="rq"><b>+</b>전화 신청 등록</span><span class="rq"><b>+</b>상담·메모 타임라인</span><span class="rq"><b>+</b>학적 이력·학년 보정</span><span class="rq"><b>+</b>변경 기록</span><span class="rq"><b>+</b>회원 탈퇴</span></div></div></div>
+</section>
+
+<!-- ================= 05 다시 물어본 것 ① ================= -->
+<section class="slide" data-title="다시 물어본 것 ① 사람·수강" data-section="고객과 요구사항">
+  <div class="head"><div><div class="kicker">01 · 고객에게 다시 물어본 것</div><h2 class="title">① 사람과 수강</h2></div><div class="note">답은 내가 원장 입장이 되어 정함 · docs/decisions.md</div></div>
+  <table class="t r">
+    <thead><tr><th style="width:620px">질문</th><th>답</th></tr></thead>
+    <tbody>
+      <tr><td class="q">실장 역할이 필요한가?</td><td><b>필요 없음</b> — 원장(관리자)과 강사(일반 직원)만</td></tr>
+      <tr><td class="q">학생도 계정이 있나?</td><td><b>있음</b> — 보기 전용, 원장이 학생 등록 때 함께 생성</td></tr>
+      <tr><td class="q">보호자 이메일은 필수인가?</td><td><b>선택</b> — 전화번호만 있으면 계정 없이 연락처로 저장</td></tr>
+      <tr><td class="q">학년은 저장하나?</td><td><b>저장 안 함</b> — 입학일자로 계산해 3월 진급 작업 불필요</td></tr>
+      <tr><td class="q">신청하면 바로 확정인가?</td><td><b>아님</b> — 학부모 신청 → 원장 승인, 규칙은 두 번 검사</td></tr>
+      <tr><td class="q">정원은 늘 8명인가?</td><td><b>반마다 다름</b> — 기본 8명, 원장이 수정</td></tr>
+      <tr><td class="q">전화로 신청하면?</td><td>원장이 어드민에서 <b>대신 등록</b> — 바로 수강중</td></tr>
+      <tr><td class="q">같은 시간에 다른 반을 다닐 수 있나?</td><td><b>불가</b> — 학생 시간 겹침 검사</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= 06 다시 물어본 것 ② ================= -->
+<section class="slide" data-title="다시 물어본 것 ② 출결·돈" data-section="고객과 요구사항">
+  <div class="head"><div><div class="kicker">01 · 고객에게 다시 물어본 것</div><h2 class="title">② 출결과 돈</h2></div></div>
+  <table class="t r">
+    <thead><tr><th style="width:620px">질문</th><th>답</th></tr></thead>
+    <tbody>
+      <tr><td class="q">보강은 시스템이 막나?</td><td><b>막음</b> — 그 달 결석 2회 이상 · 같은 학년 반 · 그날 정원 안, 원장 확정</td></tr>
+      <tr><td class="q">휴강하면?</td><td>같은 반 <b>보충 수업</b> 추가 — 학생 개인의 보강과 별도</td></tr>
+      <tr><td class="q">지각한 시각도 남기나?</td><td><b>도착 시각</b> 기록 — 지각 시간(분)은 계산</td></tr>
+      <tr><td class="q">형제 할인 "둘째"의 기준은?</td><td><b>등록순</b> — 그 달 다니는 형제 중 두 번째부터 10%</td></tr>
+      <tr><td class="q">환불 기준은?</td><td>그 달 <b>실제 수업 수</b> 기준 — 결석은 지난 수업으로 세고 휴강은 제외</td></tr>
+      <tr><td class="q">회원 탈퇴가 있나?</td><td><b>있음</b> — 다니는 반·환불 요청·이번 달 미납이 없을 때, 기록은 보관</td></tr>
+      <tr><td class="q">삭제는 어떻게 하나?</td><td><b>soft delete</b> — 지운 시각만 기록, 되살리기 가능</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ================= 07 시스템 구조 ================= -->
+<section class="slide" data-title="시스템 구조" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · 시스템</div><h2 class="title">시스템 구조 — 앱 둘, 백엔드 하나</h2></div></div>
+  <div class="arch r" style="flex:none;height:740px">
+    <svg class="wires" viewBox="0 0 1680 740" aria-hidden="true">
+      <defs><marker id="ah-arch" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L12,6 L0,12 z" class="wire-ah"/></marker></defs>
+      <path class="wire" d="M480,130 L580,130 L580,300 L680,300" marker-end="url(#ah-arch)"/>
+      <path class="wire" d="M480,610 L580,610 L580,440 L680,440" marker-end="url(#ah-arch)"/>
+      <path class="wire" d="M1120,300 L1240,300 L1240,150 L1300,150" marker-end="url(#ah-arch)"/>
+      <path class="wire" d="M1120,440 L1240,440 L1240,610 L1300,610" marker-end="url(#ah-arch)"/>
+    </svg>
+    <div class="box" style="left:0;top:20px;width:480px;height:220px">
+      <h4>코어 웹</h4><div class="t">Next.js · Vercel</div>
+      <div class="d">학부모: 자녀 요약·수강 신청·보강·결제·환불 신청<br>학생: 내 스케줄·출석·성적 보기</div>
+    </div>
+    <div class="box" style="left:0;top:500px;width:480px;height:220px">
+      <h4>어드민</h4><div class="t">Next.js · Vercel</div>
+      <div class="d">원장: 승인·학생/반/강사·회계·직원 계정<br>강사: 담당 반 출결·성적</div>
+    </div>
+    <div class="box hot" style="left:680px;top:210px;width:440px;height:320px">
+      <h4>백엔드 하나</h4><div class="t">NestJS · TypeORM · Render</div>
+      <div class="chips"><span>JWT (사용자, 역할)</span><span>역할 가드</span><span>업무 규칙 검사</span><span>변경 기록</span></div>
+      <div class="d">코어 웹은 학부모·학생만,<br>어드민은 원장·강사만 로그인</div>
+    </div>
+    <div class="box" style="left:1300px;top:60px;width:380px;height:180px">
+      <h4>PostgreSQL</h4><div class="t">Render · 스키마 hw2</div>
+      <div class="d">20테이블 · UQ·CHECK 제약</div>
+    </div>
+    <div class="box" style="left:1300px;top:520px;width:380px;height:180px">
+      <h4>Dify</h4><div class="t">chat-messages · 스트리밍</div>
+      <div class="d">학원 안내 지식으로 문의 답변<br>API 키는 백엔드에만</div>
+    </div>
+    <div class="wl" style="left:580px;top:215px">HTTPS + JWT</div>
+    <div class="wl" style="left:580px;top:525px">HTTPS + JWT</div>
+    <div class="wl" style="left:1240px;top:225px">TypeORM</div>
+    <div class="wl" style="left:1240px;top:525px">API 키</div>
+  </div>
+</section>
+
+<!-- ================= 08 ERD 지도 ================= -->
+<section class="slide" data-title="ERD — 전체 지도" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · DB 설계 · ERD</div><h2 class="title">ERD — 20테이블, 묶음 5개</h2></div><div class="note" style="text-align:right">모든 테이블 공통 칼럼 5개<br><span class="mono" style="font-size:17px">created_at · updated_at · created_by · updated_by · deleted_at</span></div></div>
+  <div class="body r"><!--ERD:erd-map--><svg class="erd erd-map" viewBox="0 0 1720 830" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ERD 전체 지도">
+<defs><marker id="arr-map" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" class="arrowhead"/></marker></defs>
+<g class="zone z-people"><rect x="40" y="20" width="440" height="500" rx="18"/><text x="64" y="58">사람·계정 · 5</text></g>
+<g class="chip hot"><rect x="64" y="76" width="392" height="76" rx="10"/><text class="cname" x="80" y="121.0">app_user</text><text class="cko" x="440" y="121.0">모든 계정</text></g>
+<g class="chip"><rect x="64" y="164" width="392" height="76" rx="10"/><text class="cname" x="80" y="209.0">parent_profile</text><text class="cko" x="440" y="209.0">학부모</text></g>
+<g class="chip"><rect x="64" y="252" width="392" height="76" rx="10"/><text class="cname" x="80" y="297.0">student</text><text class="cko" x="440" y="297.0">학생</text></g>
+<g class="chip"><rect x="64" y="340" width="392" height="76" rx="10"/><text class="cname" x="80" y="385.0">teacher</text><text class="cko" x="440" y="385.0">강사</text></g>
+<g class="chip"><rect x="64" y="428" width="392" height="76" rx="10"/><text class="cname" x="80" y="473.0">family</text><text class="cko" x="440" y="473.0">가족(형제)</text></g>
+<g class="zone z-school"><rect x="820" y="20" width="860" height="220" rx="18"/><text x="844" y="58">학적·상담 · 4</text></g>
+<g class="chip"><rect x="844" y="76" width="399" height="64" rx="10"/><text class="cname" x="860" y="115.0">school</text><text class="cko" x="1227" y="115.0">학교</text></g>
+<g class="chip"><rect x="1257" y="76" width="399" height="64" rx="10"/><text class="cname" x="1273" y="115.0">student_school_history</text><text class="cko" x="1640" y="115.0">학적 이력</text></g>
+<g class="chip"><rect x="844" y="152" width="399" height="64" rx="10"/><text class="cname" x="860" y="191.0">counsel_note</text><text class="cko" x="1227" y="191.0">상담·메모</text></g>
+<g class="chip"><rect x="1257" y="152" width="399" height="64" rx="10"/><text class="cname" x="1273" y="191.0">student_grade_adjustment</text><text class="cko" x="1640" y="191.0">학년 보정</text></g>
+<g class="zone z-money"><rect x="820" y="320" width="860" height="140" rx="18"/><text x="844" y="358">수강·납부·성적 · 3</text></g>
+<g class="chip"><rect x="844" y="376" width="261" height="64" rx="10"/><text class="cname" x="860" y="415.0">enrollment</text></g>
+<g class="chip"><rect x="1119" y="376" width="261" height="64" rx="10"/><text class="cname" x="1135" y="415.0">tuition_payment</text></g>
+<g class="chip"><rect x="1395" y="376" width="261" height="64" rx="10"/><text class="cname" x="1411" y="415.0">exam_score</text></g>
+<g class="zone z-class"><rect x="820" y="560" width="860" height="220" rx="18"/><text x="844" y="598">수업·출결 · 5</text></g>
+<g class="chip"><rect x="844" y="616" width="261" height="64" rx="10"/><text class="cname" x="860" y="655.0">class</text></g>
+<g class="chip"><rect x="1119" y="616" width="261" height="64" rx="10"/><text class="cname" x="1135" y="655.0">class_schedule</text></g>
+<g class="chip hot"><rect x="1395" y="616" width="261" height="64" rx="10"/><text class="cname" x="1411" y="655.0">class_session</text></g>
+<g class="chip"><rect x="844" y="692" width="261" height="64" rx="10"/><text class="cname" x="860" y="731.0">attendance</text></g>
+<g class="chip"><rect x="1119" y="692" width="261" height="64" rx="10"/><text class="cname" x="1135" y="731.0">makeup</text></g>
+<g class="zone z-log"><rect x="40" y="620" width="440" height="200" rx="18"/><text x="64" y="658">기록 (쌓기만) · 3</text></g>
+<g class="chip"><rect x="64" y="676" width="392" height="34" rx="10"/><text class="cname" x="80" y="700.0">audit_log</text><text class="cko" x="440" y="700.0">변경 기록</text></g>
+<g class="chip"><rect x="64" y="722" width="392" height="34" rx="10"/><text class="cname" x="80" y="746.0">login_history</text><text class="cko" x="440" y="746.0">로그인 기록</text></g>
+<g class="chip"><rect x="64" y="768" width="392" height="34" rx="10"/><text class="cname" x="80" y="792.0">chat_log</text><text class="cko" x="440" y="792.0">문의 기록</text></g>
+<path class="edge thick" d="M480,130 L820,130" marker-end="url(#arr-map)"/>
+<path class="edge thick" d="M480,390 L820,390" marker-end="url(#arr-map)"/>
+<path class="edge thick" d="M480,490 L650,490 L650,670 L820,670" marker-end="url(#arr-map)"/>
+<path class="edge thick" d="M1250,560 L1250,460" marker-end="url(#arr-map)"/>
+<path class="edge thick" d="M260,520 L260,620" marker-end="url(#arr-map)"/>
+<g class="pill"><rect x="540" y="81" width="221" height="34" rx="17"/><text x="650" y="104">학생·가족 → 이력·메모</text></g>
+<g class="pill"><rect x="562" y="341" width="176" height="34" rx="17"/><text x="650" y="364">학생 → 수강·성적</text></g>
+<g class="pill"><rect x="517" y="563" width="266" height="34" rx="17"/><text x="650" y="586">강사 → 반 · 학생 → 출결</text></g>
+<g class="pill"><rect x="1292" y="493" width="116" height="34" rx="17"/><text x="1350" y="516">반 → 수강</text></g>
+<g class="pill"><rect x="304" y="553" width="131" height="34" rx="17"/><text x="370" y="576">계정 → 기록</text></g>
+</svg><!--/ERD--></div>
+</section>
+
+<!-- ================= 09 ERD ① ================= -->
+<section class="slide" data-title="ERD ① 사람·가족·학적" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · DB 설계 · ERD</div><h2 class="title">① 계정 하나 → 역할별 정보</h2></div><div class="note">화살표 방향: 하나(1) → 여러 개(N)</div></div>
+  <div class="body r"><!--ERD:erd-people--><svg class="erd" viewBox="0 0 1720 800" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ERD 관계도">
+<defs><marker id="arr-erd-people" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" class="arrowhead"/></marker></defs>
+<path class="edge" d="M720,72 L310,72 L310,250" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M870,114 L870,250" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M1020,72 L1430,72 L1430,250" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M470,480 L470,420 L310,420 L310,334" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M680,480 L680,420 L740,420 L740,334" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M590,564 L590,690" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M180,334 L180,732 L440,732" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M880,334 L880,732 L740,732" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M970,334 L970,690" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M1000,334 L1000,522 L1240,522" marker-end="url(#arr-erd-people)"/>
+<path class="edge" d="M1550,690 L1550,564" marker-end="url(#arr-erd-people)"/>
+<g class="node hot"><rect x="720" y="30" width="300" height="84" rx="12"/><text class="tname" x="742" y="66">app_user</text><text class="tko" x="742" y="96">모든 계정</text></g>
+<g class="node"><rect x="160" y="250" width="300" height="84" rx="12"/><text class="tname" x="182" y="286">parent_profile</text><text class="tko" x="182" y="316">학부모</text></g>
+<g class="node hot"><rect x="720" y="250" width="300" height="84" rx="12"/><text class="tname" x="742" y="286">student</text><text class="tko" x="742" y="316">학생</text></g>
+<g class="node"><rect x="1280" y="250" width="300" height="84" rx="12"/><text class="tname" x="1302" y="286">teacher</text><text class="tko" x="1302" y="316">강사</text></g>
+<g class="node"><rect x="440" y="480" width="300" height="84" rx="12"/><text class="tname" x="462" y="516">family</text><text class="tko" x="462" y="546">가족(형제)</text></g>
+<g class="node"><rect x="1240" y="480" width="420" height="84" rx="12"/><text class="tname" x="1262" y="516">student_school_history</text><text class="tko" x="1262" y="546">학적 이력</text></g>
+<g class="node"><rect x="440" y="690" width="300" height="84" rx="12"/><text class="tname" x="462" y="726">counsel_note</text><text class="tko" x="462" y="756">상담·메모</text></g>
+<g class="node"><rect x="920" y="690" width="420" height="84" rx="12"/><text class="tname" x="942" y="726">student_grade_adjustment</text><text class="tko" x="942" y="756">학년 보정</text></g>
+<g class="node"><rect x="1400" y="690" width="300" height="84" rx="12"/><text class="tname" x="1422" y="726">school</text><text class="tko" x="1422" y="756">학교</text></g>
+<g class="pill"><rect x="464" y="55" width="101" height="34" rx="17"/><text x="515" y="78">1 : 1</text></g>
+<g class="pill"><rect x="820" y="165" width="101" height="34" rx="17"/><text x="870" y="188">1 : 1</text></g>
+<g class="pill"><rect x="1174" y="55" width="101" height="34" rx="17"/><text x="1225" y="78">1 : 1</text></g>
+<g class="pill"><rect x="244" y="360" width="131" height="34" rx="17"/><text x="310" y="383">보호자 1:N</text></g>
+<g class="pill"><rect x="682" y="360" width="116" height="34" rx="17"/><text x="740" y="383">형제 1:N</text></g>
+<g class="pill"><rect x="554" y="610" width="71" height="34" rx="17"/><text x="590" y="633">1:N</text></g>
+<g class="pill"><rect x="92" y="583" width="176" height="34" rx="17"/><text x="180" y="606">학부모 메모 1:N</text></g>
+<g class="pill"><rect x="800" y="543" width="161" height="34" rx="17"/><text x="880" y="566">학생 메모 1:N</text></g>
+<g class="pill"><rect x="934" y="613" width="71" height="34" rx="17"/><text x="970" y="636">1:N</text></g>
+<g class="pill"><rect x="1040" y="505" width="161" height="34" rx="17"/><text x="1120" y="528">학교 이력 1:N</text></g>
+<g class="pill"><rect x="1514" y="610" width="71" height="34" rx="17"/><text x="1550" y="633">1:N</text></g>
+</svg><!--/ERD--></div>
+</section>
+
+<!-- ================= 10 ERD ② ================= -->
+<section class="slide" data-title="ERD ② 수업·출결·돈" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · DB 설계 · ERD</div><h2 class="title">② 반 → 실제 수업 → 출결 → 보강</h2></div><div class="note">휴강 → 보충: class_session끼리 연결</div></div>
+  <div class="body r"><!--ERD:erd-class--><svg class="erd" viewBox="0 0 1720 810" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="ERD 관계도">
+<defs><marker id="arr-erd-class" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L12,6 L0,12 z" class="arrowhead"/></marker></defs>
+<path class="edge" d="M340,102 L480,102" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M780,102 L960,102" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M1260,90 L1400,90" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M1060,60 L1060,18 L1160,18 L1160,60" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M520,144 L520,332 L340,332" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M660,144 L660,520" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M1210,144 L1210,290" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M1440,144 L1440,290" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M1480,332 L1600,332 L1600,144" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M340,720 L420,720 L420,562 L480,562" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M780,562 L960,562" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M190,700 L190,604" marker-end="url(#arr-erd-class)"/>
+<path class="edge" d="M340,764 L1680,764 L1680,144" marker-end="url(#arr-erd-class)"/>
+<g class="node"><rect x="40" y="60" width="300" height="84" rx="12"/><text class="tname" x="62" y="96">teacher</text><text class="tko" x="62" y="126">강사</text></g>
+<g class="node"><rect x="480" y="60" width="300" height="84" rx="12"/><text class="tname" x="502" y="96">class</text><text class="tko" x="502" y="126">반</text></g>
+<g class="node hot"><rect x="960" y="60" width="300" height="84" rx="12"/><text class="tname" x="982" y="96">class_session</text><text class="tko" x="982" y="126">실제 수업</text></g>
+<g class="node hot"><rect x="1400" y="60" width="300" height="84" rx="12"/><text class="tname" x="1422" y="96">attendance</text><text class="tko" x="1422" y="126">출결</text></g>
+<g class="node"><rect x="40" y="290" width="300" height="84" rx="12"/><text class="tname" x="62" y="326">class_schedule</text><text class="tko" x="62" y="356">정규 요일</text></g>
+<g class="node"><rect x="1180" y="290" width="300" height="84" rx="12"/><text class="tname" x="1202" y="326">makeup</text><text class="tko" x="1202" y="356">보강</text></g>
+<g class="node"><rect x="40" y="520" width="300" height="84" rx="12"/><text class="tname" x="62" y="556">exam_score</text><text class="tko" x="62" y="586">시험 성적</text></g>
+<g class="node"><rect x="480" y="520" width="300" height="84" rx="12"/><text class="tname" x="502" y="556">enrollment</text><text class="tko" x="502" y="586">수강 기록</text></g>
+<g class="node"><rect x="960" y="520" width="340" height="84" rx="12"/><text class="tname" x="982" y="556">tuition_payment</text><text class="tko" x="982" y="586">월 납부</text></g>
+<g class="node"><rect x="40" y="700" width="300" height="84" rx="12"/><text class="tname" x="62" y="736">student</text><text class="tko" x="62" y="766">학생</text></g>
+<g class="pill"><rect x="352" y="85" width="116" height="34" rx="17"/><text x="410" y="108">담당 1:N</text></g>
+<g class="pill"><rect x="834" y="85" width="71" height="34" rx="17"/><text x="870" y="108">1:N</text></g>
+<g class="pill"><rect x="1272" y="73" width="116" height="34" rx="17"/><text x="1330" y="96">출결 1:N</text></g>
+<g class="pill"><rect x="1044" y="1" width="131" height="34" rx="17"/><text x="1110" y="24">휴강 → 보충</text></g>
+<g class="pill"><rect x="440" y="221" width="161" height="34" rx="17"/><text x="520" y="244">정규 요일 1:N</text></g>
+<g class="pill"><rect x="594" y="315" width="131" height="34" rx="17"/><text x="660" y="338">수강생 1:N</text></g>
+<g class="pill"><rect x="1130" y="200" width="161" height="34" rx="17"/><text x="1210" y="223">보강 수업 1:N</text></g>
+<g class="pill"><rect x="1374" y="200" width="131" height="34" rx="17"/><text x="1440" y="223">결석 → 보강</text></g>
+<g class="pill"><rect x="1550" y="245" width="101" height="34" rx="17"/><text x="1600" y="268">보강 출결</text></g>
+<g class="pill"><rect x="362" y="624" width="116" height="34" rx="17"/><text x="420" y="647">수강 1:N</text></g>
+<g class="pill"><rect x="797" y="545" width="146" height="34" rx="17"/><text x="870" y="568">월 납부 1:N</text></g>
+<g class="pill"><rect x="132" y="635" width="116" height="34" rx="17"/><text x="190" y="658">성적 1:N</text></g>
+<g class="pill"><rect x="930" y="747" width="161" height="34" rx="17"/><text x="1010" y="770">학생 출결 1:N</text></g>
+</svg><!--/ERD--></div>
+</section>
+
+<!-- ================= 11 설계 이유 ① ================= -->
+<section class="slide" data-title="설계 이유 ① 회원은 한 테이블에서" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · 설계 이유 ① 테이블 분리</div><h2 class="title">회원은 한 테이블에서</h2></div></div>
+  <div class="row body" style="align-items:center">
+    <div class="f1 col" style="gap:30px">
+      <p class="lead r" style="color:var(--ink);font-weight:700">계정은 <span class="mono accent">app_user</span> 하나, 사람 정보는 역할별 profile</p>
+      <ul class="bullets r">
+        <li>모든 회원은 <span class="mono">app_user</span> 한 테이블, 역할은 <span class="mono">role</span>(학부모·학생·강사·원장)</li>
+        <li>역할별 정보는 <span class="mono">parent_profile · student · teacher</span>에 따로, FK로 연결</li>
+        <li>로그인·비밀번호 해시·임시 비밀번호·사용 중지는 모든 역할이 같음 — 한 곳에서 처리, 이메일 중복도 한 칼럼에서 차단</li>
+        <li>자주 안 바뀌는 계정 정보와 계속 쌓이는 정보(메모·성적·학적 이력)는 테이블을 나눔</li>
+      </ul>
+    </div>
+    <div class="r" style="width:560px;flex:none">
+      <svg class="erd" viewBox="0 0 560 520" aria-hidden="true">
+        <defs><marker id="arr-mini" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L12,6 L0,12 z" class="arrowhead"/></marker></defs>
+        <path class="edge" d="M280,124 L280,180 L95,180 L95,300" marker-end="url(#arr-mini)"/>
+        <path class="edge" d="M280,124 L280,300" marker-end="url(#arr-mini)"/>
+        <path class="edge" d="M280,124 L280,180 L465,180 L465,300" marker-end="url(#arr-mini)"/>
+        <g class="node hot"><rect x="130" y="40" width="300" height="84" rx="12"/><text class="tname" x="152" y="76">app_user</text><text class="tko" x="152" y="106">이메일·해시·role</text></g>
+        <g class="node"><rect x="10" y="300" width="170" height="84" rx="12"/><text class="tname" x="26" y="336" style="font-size:20px">parent_</text><text class="tko" x="26" y="366">학부모</text></g>
+        <g class="node"><rect x="195" y="300" width="170" height="84" rx="12"/><text class="tname" x="211" y="336" style="font-size:20px">student</text><text class="tko" x="211" y="366">학생</text></g>
+        <g class="node"><rect x="380" y="300" width="170" height="84" rx="12"/><text class="tname" x="396" y="336" style="font-size:20px">teacher</text><text class="tko" x="396" y="366">강사</text></g>
+        <g class="pill"><rect x="226" y="198" width="108" height="34" rx="17"/><text x="280" y="221">1 : 1</text></g>
+        <text x="280" y="460" text-anchor="middle" style="font-size:22px;fill:var(--muted)">로그인 화면은 앱마다 하나, 메뉴는 role로 구분</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 12 설계 이유 ② ================= -->
+<section class="slide" data-title="설계 이유 ② 규칙과 실제 수업" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · 설계 이유 ① 테이블 분리</div><h2 class="title">수업은 "규칙"과 "실제"를 나눔</h2></div></div>
+  <div class="body" style="justify-content:center;gap:56px">
+    <p class="lead r" style="color:var(--ink);font-weight:700">출결은 <span class="accent">실제로 열린 수업</span>에 붙는다</p>
+    <div class="flow r">
+      <div class="st"><div class="nm">class</div><div class="big">반</div><div class="ex">중2 심화A · 정원 8</div></div>
+      <div class="ar"><svg viewBox="0 0 44 24"><path d="M0,10 H32 V2 L44,12 L32,22 V14 H0 Z"/></svg></div>
+      <div class="st"><div class="nm">class_schedule</div><div class="big">정규 요일</div><div class="ex">매주 화·목 19:00~21:00</div></div>
+      <div class="ar"><svg viewBox="0 0 44 24"><path d="M0,10 H32 V2 L44,12 L32,22 V14 H0 Z"/></svg></div>
+      <div class="st hot"><div class="nm">class_session</div><div class="big">실제 수업</div><div class="ex">11/4(화) 정상 · 휴강 · 보충</div></div>
+      <div class="ar"><svg viewBox="0 0 44 24"><path d="M0,10 H32 V2 L44,12 L32,22 V14 H0 Z"/></svg></div>
+      <div class="st"><div class="nm">attendance</div><div class="big">학생별 출결</div><div class="ex">출석 · 지각 · 결석 → 결석이면 보강</div></div>
+    </div>
+    <ul class="bullets r">
+      <li>예정과 실제가 다를 수 있음 — 휴강하면 같은 반에 보충 수업 추가</li>
+      <li>출결·보강·환불 횟수는 모두 실제 수업 날짜 기준</li>
+      <li>요일을 "화,목" 글자 한 칸에 넣으면 강사 시간 겹침 검사 불가</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================= 13 설계 이유 ③ ================= -->
+<section class="slide" data-title="설계 이유 ③ 기록과 이력" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · 설계 이유 ① 테이블 분리</div><h2 class="title">기록과 이력은 쌓기만</h2></div><div class="lead" style="font-size:26px">백업이 아닌 변경 이력 — 언제·누가·무엇을</div></div>
+  <div class="body center-y"><table class="t r" style="font-size:27px">
+    <thead><tr><th style="width:300px">테이블</th><th style="width:640px">남기는 것</th><th>쓰임</th></tr></thead>
+    <tbody>
+      <tr><td class="k mono">audit_log</td><td>바뀐 날짜 · 바꾼 사람 · IP · 바뀌기 전과 후 값</td><td>문제 추적 · 책임 확인</td></tr>
+      <tr><td class="k mono">login_history</td><td>로그인 성공·실패 · IP · 브라우저</td><td>보안 확인 · 이용 내역</td></tr>
+      <tr><td class="k mono">chat_log</td><td>챗봇 질문 · 답 · 근거와 점수 · 걸린 시간</td><td>자주 묻는 질문 분석 · 틀린 답 찾기 · 이용량 파악 · 마케팅 자료</td></tr>
+    </tbody>
+  </table>
+  <div class="row r" style="margin-top:44px;gap:24px">
+    <div class="panel tint f1"><div style="font-size:24px;font-weight:800">수정·삭제 없음</div><div class="note" style="margin-top:6px">세 테이블 모두 쌓기만 — 공통 칼럼은 created_at만</div></div>
+    <div class="panel tint f1"><div style="font-size:24px;font-weight:800">마지막 로그인은 저장 안 함</div><div class="note" style="margin-top:6px">login_history의 최근 성공 기록으로 조회 — 로그인마다 계정 행을 고치면 실제 수정 기록이 묻힘</div></div>
+  </div>
+</section>
+
+<!-- ================= 14 테이블마다 한 줄 ================= -->
+<section class="slide" data-title="테이블마다 한 줄" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · 설계 이유 ① 테이블 분리</div><h2 class="title">자세한 테이블별 이유는 이렇습니다</h2></div></div>
+  <div class="tbl-lines body r">
+    <div class="grp">
+      <h4>사람</h4>
+      <div class="ln"><span class="n">app_user</span><span>로그인·해시·사용 중지가 역할마다 같아 계정은 한 테이블</span></div>
+      <div class="ln"><span class="n">parent_profile</span><span>전화번호만 있는 보호자도 있어 계정과 분리</span></div>
+      <div class="ln"><span class="n">student</span><span>학적 정보는 계정과 분리, 가족(family)에 소속</span></div>
+      <div class="ln"><span class="n">teacher</span><span>과목·소개·이력은 강사만 있어 계정과 1:1 분리</span></div>
+      <div class="ln"><span class="n">family</span><span>형제를 묶어 할인 순번 계산</span></div>
+      <h4 style="margin-top:18px">학적</h4>
+      <div class="ln"><span class="n">school</span><span>같은 이름 학교를 지역으로 구분, 이름 오타 방지</span></div>
+      <div class="ln"><span class="n">student_school_history</span><span>전학·진학 이력이 쌓임 — 학생 한 명에 여러 행</span></div>
+      <div class="ln"><span class="n">student_grade_adjustment</span><span>학년은 계산, 유급 같은 예외만 사유와 함께 기록</span></div>
+      <div class="ln"><span class="n">counsel_note</span><span>날짜·종류로 찾고 한 건씩 고치는 메모</span></div>
+    </div>
+    <div class="grp">
+      <h4>수업</h4>
+      <div class="ln"><span class="n">class</span><span>반 기본 정보 — 대상 학년·정원·수강료·강사</span></div>
+      <div class="ln"><span class="n">class_schedule</span><span>한 반에 요일 여러 개 (주 2회)</span></div>
+      <div class="ln"><span class="n">class_session</span><span>실제로 열린 수업 — 휴강·보충 반영</span></div>
+      <div class="ln"><span class="n">enrollment</span><span>한 학생이 여러 반 수강, 그만둬도 기록 유지</span></div>
+      <div class="ln"><span class="n">attendance</span><span>실제 수업 × 학생마다 출결 하나</span></div>
+      <div class="ln"><span class="n">makeup</span><span>결석 한 건 → 다른 반 수업 연결</span></div>
+      <div class="ln"><span class="n">tuition_payment</span><span>수강·달마다 한 행, 그때 금액을 영수증처럼 보관</span></div>
+      <div class="ln"><span class="n">exam_score</span><span>학생 한 명이 여러 번 보는 시험</span></div>
+      <h4 style="margin-top:18px">기록</h4>
+      <div class="ln"><span class="n">audit_log</span><span>누가·언제·IP·변경 전후 값 (쌓기만)</span></div>
+      <div class="ln"><span class="n">login_history</span><span>로그인마다 계정 행을 고치지 않도록 분리</span></div>
+      <div class="ln"><span class="n">chat_log</span><span>질문·답·근거로 틀린 답·자주 묻는 질문 분석</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 15 규칙 위치 ================= -->
+<section class="slide" data-title="규칙은 어디서 막나" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · 설계 이유 ② 규칙 위치</div><h2 class="title">규칙은 어디서 막나</h2></div><div class="lead" style="font-size:25px;text-align:right">한 행 안에서 판단되면 <b class="accent">DB</b>,<br>다른 테이블을 보거나 세야 하면 <b class="accent">백엔드</b></div></div>
+  <div class="vs r">
+    <div class="side">
+      <h3><span class="badge b-acc">DB</span> DBeaver로 직접 넣어도 거절</h3>
+      <div class="item"><div class="w">같은 반 중복 수강</div><div class="h"><code>부분 UQ(학생, 반)</code> — 한 테이블 안, 동시에 두 번 눌러도 차단</div></div>
+      <div class="item"><div class="w">출결은 학생·수업당 하나</div><div class="h"><code>UQ(수업, 학생)</code> — 한 테이블 안</div></div>
+      <div class="item"><div class="w">점수 0~100</div><div class="h"><code>CHECK</code> — 한 칸 값의 범위</div></div>
+      <div class="item"><div class="w">낸 금액 = 정가 − 할인</div><div class="h"><code>CHECK</code> — 한 행 안 칸끼리 비교</div></div>
+      <div class="item"><div class="w">이메일 중복</div><div class="h"><code>부분 UQ</code> — 계정이 한 테이블이라 역할이 달라도 중복 차단</div></div>
+    </div>
+    <div class="side">
+      <h3><span class="badge b-info">백엔드</span> 웹앱 요청일 때 거절</h3>
+      <div class="item"><div class="w">정원</div><div class="h">진행 중 수강 수를 세야 함 — 반 행 잠금으로 동시 승인도 차단</div></div>
+      <div class="item"><div class="w">학년 일치</div><div class="h">학년은 입학일자로 계산하는 값</div></div>
+      <div class="item"><div class="w">강사·학생 시간 겹침</div><div class="h">여러 반의 요일·시간을 비교해야 함</div></div>
+      <div class="item"><div class="w">보강 자격</div><div class="h">그 달 결석 수를 세야 함</div></div>
+      <div class="item"><div class="w">권한 · 자기 것만</div><div class="h">요청한 사람은 로그인 정보(JWT)로만 확인 가능</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 16 저장 vs 계산 ================= -->
+<section class="slide" data-title="저장하지 않고 계산한 값" data-section="시스템과 DB 설계">
+  <div class="head"><div><div class="kicker">02 · 설계 이유 ③ 계산값</div><h2 class="title">저장하지 않고 계산한 값</h2></div><div class="lead" style="font-size:26px">바뀔 수 있는 값은 계산, 영수증은 저장</div></div>
+  <div class="vs r">
+    <div class="side">
+      <h3><span class="badge b-ok">계산</span> 원본이 바뀌면 같이 바뀌어야 함</h3>
+      <div class="item"><div class="w">학년</div><div class="h">입학일자 + 보정으로 계산 — 매년 3월 일괄 수정은 빠뜨리기 쉬움</div></div>
+      <div class="item"><div class="w">출석률</div><div class="h">출결을 고치면 바로 반영 (지각 3 = 결석 1)</div></div>
+      <div class="item"><div class="w">반 현재 인원</div><div class="h">신청·승인·수강종료마다 고치면 어긋나기 쉬움</div></div>
+      <div class="item"><div class="w">이번 달 청구액 · 미납</div><div class="h">할인·납부를 고치면 바로 반영</div></div>
+      <div class="item"><div class="w">형제 순번</div><div class="h">형제가 그만두면 순번이 바뀜</div></div>
+    </div>
+    <div class="side">
+      <h3><span class="badge b-warn">저장</span> 나중에 바뀌면 안 되는 값</h3>
+      <div class="item"><div class="w">확정 환불액</div><div class="h"><code>enrollment.refund_amount</code> — 이미 돌려준 금액, 나중에 출결을 고쳐도 그대로</div></div>
+      <div class="item"><div class="w">그 달 정가 · 할인 · 낸 금액</div><div class="h"><code>tuition_payment</code> — 수강료가 바뀌어도 그 달 영수증은 그대로</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 17 웹앱 ① 주소·계정 ================= -->
+<section class="slide" data-title="웹앱 — 주소와 계정" data-section="웹앱과 검증">
+  <div class="head"><div><div class="kicker">03 · 웹앱</div><h2 class="title">주소와 계정 관리</h2></div>
+    <div class="note mono" style="font-size:19px;text-align:right;line-height:1.7">코어 웹 academy-enrollment-web.vercel.app<br>어드민 academy-enrollment-admin.vercel.app</div></div>
+  <div class="row body r" style="gap:28px">
+    <div class="col" style="width:300px;flex:none"><div class="shot" style="height:640px"><img src="captures/03-web-signup.png" alt="학부모 회원가입"></div><div class="cap"><span class="code">공통1</span><b>학부모 회원가입</b><br>이메일 중복 불가</div></div>
+    <div class="col f1"><div class="shot" style="height:360px"><img src="captures/38-admin-staff-reset.png" alt="직원 비밀번호 리셋"></div><div class="cap"><span class="code">공통8</span><b>직원 비밀번호 리셋</b> — 원장만 가능, 임시 비밀번호는 한 번만 표시</div>
+      <div class="shot" style="height:200px;margin-top:22px"><img src="captures/20-admin-login-inactive.png" alt="사용 중지 계정 로그인 거절" style="object-position:center 40%"></div><div class="cap"><span class="code">공통7</span><b>사용 중지 계정</b> — 로그인 거절</div></div>
+    <div class="col f1"><div class="shot" style="height:360px"><img src="captures/21-admin-temp-password.png" alt="임시 비밀번호 변경 강제"></div><div class="cap"><span class="code">공통8</span><b>임시 비밀번호 → 변경 강제</b> — 바꾸기 전에는 다른 화면 사용 불가</div>
+      <div class="shot" style="height:200px;margin-top:22px"><img src="captures/36-admin-staff.png" alt="직원 계정 목록"></div><div class="cap"><span class="code">공통5·6</span><b>직원 계정</b> — 가입 없음, 원장이 만들고 역할 지정</div></div>
+  </div>
+</section>
+
+<!-- ================= 18 웹앱 ② 주요 화면 ================= -->
+<section class="slide" data-title="웹앱 — 주요 화면" data-section="웹앱과 검증">
+  <div class="head"><div><div class="kicker">03 · 웹앱</div><h2 class="title">주요 화면</h2></div></div>
+  <div class="row body r" style="gap:36px">
+    <div class="col" style="width:820px;flex:none">
+      <div style="font-size:24px;font-weight:800;margin-bottom:14px">학부모 · 코어 웹</div>
+      <div class="row" style="gap:16px">
+        <div class="f1"><div class="shot" style="height:690px"><img src="captures/05-web-home-summary.png" alt="자녀 요약"></div><div class="cap"><span class="code">D19</span>자녀 요약</div></div>
+        <div class="f1"><div class="shot" style="height:690px"><img src="captures/08-web-enroll.png" alt="수강 신청"></div><div class="cap"><span class="code">B6~8</span>수강 신청 — 불가 이유 표시</div></div>
+        <div class="f1"><div class="shot" style="height:690px"><img src="captures/11-web-makeup-B11.png" alt="보강 신청"></div><div class="cap"><span class="code">B11</span>보강 신청</div></div>
+        <div class="f1"><div class="shot" style="height:690px"><img src="captures/12-web-refund-D20.png" alt="환불 신청"></div><div class="cap"><span class="code">D20</span>환불 신청</div></div>
+      </div>
+    </div>
+    <div class="col f1">
+      <div style="font-size:24px;font-weight:800;margin-bottom:14px">원장·강사 · 어드민</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px 18px">
+        <div><div class="shot" style="height:300px"><img src="captures/22-admin-dashboard.png" alt="대시보드"></div><div class="cap"><span class="code">C13~15</span>대시보드</div></div>
+        <div><div class="shot" style="height:300px"><img src="captures/28-admin-timetable-new-B9.png" alt="시간표"></div><div class="cap"><span class="code">B9</span>시간표 — 강사 겹침 표시</div></div>
+        <div><div class="shot" style="height:300px"><img src="captures/30-admin-attendance-B10.png" alt="출결 입력"></div><div class="cap"><span class="code">B10</span>출결 — 지각은 도착 시각</div></div>
+        <div><div class="shot" style="height:300px"><img src="captures/32-admin-accounting-B12-C15.png" alt="회계"></div><div class="cap"><span class="code">B12·C15</span>회계 — 납부·형제 할인·미납</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 19 백엔드 거절 ================= -->
+<section class="slide" data-title="거절 검증 ① 백엔드" data-section="웹앱과 검증">
+  <div class="head"><div><div class="kicker">03 · 검증</div><h2 class="title">규칙을 일부러 어겨 본 백엔드 응답</h2></div><div class="note">실제 응답 문구 · captures/40-api-rejections.png</div></div>
+  <table class="t r" style="font-size:23px">
+    <thead><tr><th style="width:120px">요구</th><th style="width:520px">한 일</th><th style="width:90px">응답</th><th>거절 문구</th></tr></thead>
+    <tbody>
+      <tr><td class="k">공통4</td><td>학부모가 다른 가족 자녀 출석 보기</td><td class="mono" style="color:var(--err);font-weight:700">403</td><td>우리 가족 자녀만 볼 수 있어요.</td></tr>
+      <tr><td class="k">공통7</td><td>사용 중지된 강사 로그인</td><td class="mono" style="color:var(--err);font-weight:700">401</td><td>사용이 중지된 계정이에요. 원장님께 문의하세요.</td></tr>
+      <tr><td class="k">공통8</td><td>임시 비밀번호 상태로 다른 API 호출</td><td class="mono" style="color:var(--err);font-weight:700">403</td><td>임시 비밀번호예요. 비밀번호를 바꿔야 계속할 수 있어요.</td></tr>
+      <tr><td class="k">B6</td><td>다니는 반에 또 신청</td><td class="mono" style="color:var(--err);font-weight:700">400</td><td>신청할 수 없어요. 이미 신청했거나 다니고 있는 반이에요</td></tr>
+      <tr><td class="k">B7</td><td>정원 찬 반(8/8)에 신청</td><td class="mono" style="color:var(--err);font-weight:700">400</td><td>신청할 수 없어요. 정원(8명)이 찼어요</td></tr>
+      <tr><td class="k">B8</td><td>중2 학생이 중1 반에 신청</td><td class="mono" style="color:var(--err);font-weight:700">400</td><td>신청할 수 없어요. 중1 반이에요 (학생은 중2)</td></tr>
+      <tr><td class="k">B9</td><td>박강사가 맡은 화 19~21시에 새 반</td><td class="mono" style="color:var(--err);font-weight:700">409</td><td>저장할 수 없어요. 박강사는 화 19:00~21:00에 중2 심화A를 맡고 있어요.</td></tr>
+      <tr><td class="k">B11</td><td>그날 인원이 정원인 수업으로 보강 신청</td><td class="mono" style="color:var(--err);font-weight:700">400</td><td>보강을 신청할 수 없어요. 그날 인원이 정원(8명)을 넘어요.</td></tr>
+    </tbody>
+  </table>
+  <div class="stats r" style="margin-top:28px">
+    <div><b>166</b><span>QA 테스트케이스</span></div>
+    <div><b>28 → 26</b><span>버그 발견 → 수정 · 1건 닫음 · 낮음 1건 남음</span></div>
+    <div><b>69</b><span>백엔드 자동 테스트 통과</span></div>
+  </div>
+</section>
+
+<!-- ================= 20 DB 거절 ================= -->
+<section class="slide" data-title="거절 검증 ② DBeaver" data-section="웹앱과 검증">
+  <div class="head"><div><div class="kicker">03 · 검증</div><h2 class="title">웹앱을 거치지 않아도 DB가 거절</h2></div><div class="note">DBeaver에서 직접 INSERT · BEGIN … ROLLBACK</div></div>
+  <div class="body r" style="gap:22px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px 28px">
+      <div><div class="shot zoom-left"><img src="captures/43-dbeaver-B6-enrollment.png" alt="같은 반 중복 수강 거절" ></div><div class="cap"><span class="code">B6</span><b>같은 반 중복 수강</b> — <span class="mono" style="font-size:17px">enrollment_active_key</span> 부분 UQ</div></div>
+      <div><div class="shot zoom-left"><img src="captures/44-dbeaver-B10-attendance.png" alt="출결 중복 거절" ></div><div class="cap"><span class="code">B10</span><b>출결 두 줄</b> — <span class="mono" style="font-size:17px">attendance_session_student_key</span> UQ</div></div>
+      <div><div class="shot zoom-left"><img src="captures/45-dbeaver-D16-score.png" alt="점수 120점 거절" ></div><div class="cap"><span class="code">D16</span><b>점수 120점</b> — <span class="mono" style="font-size:17px">exam_score_score_check</span> CHECK</div></div>
+      <div><div class="shot zoom-left"><img src="captures/46-dbeaver-payment-check.png" alt="납부 금액 거절" ></div><div class="cap"><span class="code">결정40</span><b>낸 금액 ≠ 정가 − 할인</b> — <span class="mono" style="font-size:17px">tuition_payment_paid_amount_check</span></div></div>
+    </div>
+    <div class="row" style="gap:28px;align-items:center;margin-top:8px">
+      <div class="shot native" style="width:1060px;flex:none"><img src="captures/47-dbeaver-password-hash.png" alt="비밀번호 해시" ></div>
+      <div class="f1"><div style="font-size:26px;font-weight:800"><span class="code mono accent" style="font-size:18px">공통2</span> 비밀번호는 해시로만</div><div class="note" style="margin-top:8px;font-size:22px">bcrypt <span class="mono">$2b$10$…</span> — 직원도 원래 비밀번호를 알 수 없음</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 21 챗봇 ① ================= -->
+<section class="slide" data-title="문의 챗봇 — 화면과 구조" data-section="문의 챗봇">
+  <div class="head"><div><div class="kicker">04 · 선택 · Dify</div><h2 class="title">문의 챗봇 — 질문은 백엔드를 거쳐 Dify로</h2></div></div>
+  <div class="row body r" style="gap:44px">
+    <div class="row" style="gap:16px;flex:none">
+      <div class="col" style="width:300px"><div class="shot" style="height:490px"><img src="captures/48-web-chat-start.png" alt="문의하기 첫 화면"></div><div class="cap">예시 질문 버튼</div></div>
+      <div class="col" style="width:300px"><div class="shot" style="height:490px"><img src="captures/49-web-chat-answer.png" alt="문의하기 답변"></div><div class="cap">학원 안내 문서 기반 답변</div></div>
+    </div>
+    <div class="col f1" style="gap:30px">
+      <div class="flow" style="flex-direction:column;gap:0">
+        <div class="st" style="padding:16px 22px"><div class="nm">코어 웹</div><div class="big" style="font-size:25px">플로팅 "문의하기"</div></div>
+        <div class="ar" style="width:auto;height:34px"><svg viewBox="0 0 24 34" style="width:20px;height:30px"><path d="M10,0 H14 V22 H22 L12,34 L2,22 H10 Z"/></svg></div>
+        <div class="st hot" style="padding:16px 22px"><div class="nm">백엔드 POST /chat/messages</div><div class="big" style="font-size:25px">키 보관 · 제한 · 기록</div></div>
+        <div class="ar" style="width:auto;height:34px"><svg viewBox="0 0 24 34" style="width:20px;height:30px"><path d="M10,0 H14 V22 H22 L12,34 L2,22 H10 Z"/></svg></div>
+        <div class="st" style="padding:16px 22px"><div class="nm">Dify chat-messages</div><div class="big" style="font-size:25px">학원 안내 10개 문서 합본 · 조 단위 청크 · 하이브리드 검색 Top K 4</div></div>
+      </div>
+      <div>
+        <div style="font-size:26px;font-weight:800;margin-bottom:12px">백엔드를 거친 이유</div>
+        <ul class="bullets" style="gap:10px">
+          <li style="font-size:23px">API 키는 백엔드에만 — 개발자 도구로도 노출되지 않음</li>
+          <li style="font-size:23px">질문 500자 · 1분 10회 제한</li>
+          <li style="font-size:23px">사용자별 대화 분리, Dify 응답에서 필요한 값만 골라 전달</li>
+          <li style="font-size:23px">대화는 <span class="mono">chat_log</span>에 저장 — 원장이 어드민 "문의 기록"에서 확인</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 22 챗봇 ② 문제와 해결 ================= -->
+<section class="slide" data-title="문의 챗봇 — 문제와 해결" data-section="문의 챗봇">
+  <div class="head"><div><div class="kicker">04 · 선택 · 문제와 해결</div><h2 class="title">API 키를 바꿀 때 임베딩 설정을 놓침</h2></div></div>
+  <div class="body center-y" style="gap:56px">
+    <div class="steps r">
+      <div class="s"><div class="no">01</div><div class="w">API 키 만료</div><div class="h">처음 넣은 GPT API 키 만료 → 새 키로 교체</div></div>
+      <div class="s"><div class="no">02</div><div class="w">임베딩 쪽 키를 놓침</div><div class="h">모델은 그대로, 임베딩 설정의 키는 교체 누락 → 오류</div></div>
+      <div class="s"><div class="no">03</div><div class="w">설정 문제로 의심</div><div class="h">임베딩·검색 설정 문제로 보고 검색 임계치부터 조정</div></div>
+      <div class="s hot"><div class="no">04</div><div class="w">원인 찾아 해결</div><div class="h">임베딩 키 교체 후 지식 다시 임베딩</div></div>
+    </div>
+    <div class="row r" style="gap:36px;align-items:stretch">
+      <div class="panel tint f1">
+        <div style="font-size:26px;font-weight:800;margin-bottom:12px">결과</div>
+        <ul class="bullets" style="gap:12px">
+          <li style="font-size:23px">기본 질문은 잘 답함 — 검색 설정은 그대로 유지</li>
+          <li style="font-size:23px">딱딱했던 첫 프롬프트만 수정 — 말투·답변 범위</li>
+        </ul>
+      </div>
+      <div style="width:700px;flex:none"><div class="shot" style="height:250px"><img src="captures/42-admin-chat-logs.png" alt="어드민 문의 기록"></div><div class="cap">어드민 "문의 기록" — 질문마다 찾은 근거와 점수 (원장만)</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 23 배운 점 ================= -->
+<section class="slide" data-title="배운 점 — 다시 한다면" data-section="배운 점">
+  <div class="head"><div><div class="kicker">05 · 배운 점</div><h2 class="title">다시 한다면 바꿀 것</h2></div></div>
+  <div class="body center-y"><table class="t r" style="font-size:28px">
+    <thead><tr><th style="width:640px">바꿀 것</th><th>이유</th></tr></thead>
+    <tbody>
+      <tr><td class="k" style="white-space:normal">지각 3회 = 결석 1회를 <span class="accent">반마다</span> 세기</td><td>요구사항을 잘못 이해해 모든 수업을 합쳐 셈 — 같은 반 기준으로 세야 했음</td></tr>
+      <tr><td class="k" style="white-space:normal">챗봇 지식을 처음부터 <span class="accent">DB에서</span> 만들게 설계</td><td>지금은 강사·반 정보가 바뀌면 md를 고쳐 다시 올림</td></tr>
+      <tr><td class="k" style="white-space:normal">API 키를 바꿀 때 <span class="accent">임베딩 설정까지</span> 확인하는 체크리스트</td><td>키 교체 때 임베딩 쪽을 놓쳐 오류 발생</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<!-- ================= 24 아쉬운 점과 다음 ================= -->
+<section class="slide" data-title="아쉬운 점과 다음에 할 것" data-section="배운 점">
+  <div class="head"><div><div class="kicker">05 · 배운 점</div><h2 class="title">아쉬운 점과 다음에 할 것</h2></div></div>
+  <div class="vs r">
+    <div class="side">
+      <h3><span class="badge b-warn">아쉬운 점</span></h3>
+      <div class="item"><div class="w">챗봇 지식을 손으로 관리</div><div class="h">강사·반 정보를 md로 고치고 Dify에 다시 올림</div></div>
+      <div class="item"><div class="w">화면 이동·메뉴 구조</div><div class="h">원하는 기능까지 찾아가기 불편</div></div>
+      <div class="item"><div class="w">일부 화면 로딩이 느림</div><div class="h">원인 후보: Render 무료 서버 잠듦 · 쿼리 · 인덱스 · 네트워크 (아직 측정 전)</div></div>
+    </div>
+    <div class="side">
+      <h3><span class="badge b-ok">다음에 할 것</span></h3>
+      <div class="item"><div class="w">DB → 챗봇 지식 자동 반영</div><div class="h">강사·반 수정이 챗봇에 바로 반영</div></div>
+      <div class="item"><div class="w">느린 원인부터 측정한 뒤 개선</div><div class="h">원인별로 인덱스·쿼리·프런트 개선</div></div>
+      <div class="item"><div class="w">가입 알림 · 학생 계정 이메일 안내</div><div class="h">신규 가입 Slack 알림, 학생은 이메일로 비밀번호 직접 설정</div></div>
+      <div class="item"><div class="w">고객이 원하면 SNS 로그인</div><div class="h">이번 요구사항은 "소셜 로그인 없음"이라 제외</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 25 시연 — 사용자 웹 ================= -->
+<section class="slide demo" data-title="시연 — 사용자 웹" data-section="시연" data-demo="web">
+  <div class="demo-head">
+    <span class="ttl">시연</span><span class="subt">사용자 웹</span><span class="url" data-demo-url></span>
+    <span class="sp"></span>
+    <button class="btn" data-act="prev" type="button"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>이전</button>
+    <button class="btn" data-act="toc" type="button"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>목차</button>
+    <button class="btn" data-act="reload" type="button"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>새로고침</button>
+    <a class="btn pri" data-act="open" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>새 탭</a>
+    <button class="btn" data-act="next" type="button">다음<svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+  </div>
+  <div class="frame-wrap">
+    <iframe title="사용자 웹 시연" data-src loading="eager" referrerpolicy="no-referrer"></iframe>
+    <div class="frame-state"><div><div class="spin"></div>사용자 웹을 불러오고 있어요<br><span style="font-size:20px">Render 서버가 잠들어 있으면 첫 응답이 1분 가까이 걸려요</span></div></div>
+    <div class="frame-tip">화면 안을 누르면 키보드 이동이 멈춰요 · 위 버튼으로 이동해요</div>
+  </div>
+</section>
+
+<!-- ================= 26 시연 — 어드민 웹 ================= -->
+<section class="slide demo" data-title="시연 — 어드민 웹" data-section="시연" data-demo="admin">
+  <div class="demo-head">
+    <span class="ttl">시연</span><span class="subt">어드민 웹</span><span class="url" data-demo-url></span>
+    <span class="sp"></span>
+    <button class="btn" data-act="prev" type="button"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>이전</button>
+    <button class="btn" data-act="toc" type="button"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>목차</button>
+    <button class="btn" data-act="reload" type="button"><svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7L21 8"/><path d="M21 3v5h-5"/></svg>새로고침</button>
+    <a class="btn pri" data-act="open" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>새 탭</a>
+    <button class="btn" data-act="next" type="button">다음<svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+  </div>
+  <div class="frame-wrap">
+    <iframe title="어드민 웹 시연" data-src loading="eager" referrerpolicy="no-referrer"></iframe>
+    <div class="frame-state"><div><div class="spin"></div>어드민 웹을 불러오고 있어요<br><span style="font-size:20px">Render 서버가 잠들어 있으면 첫 응답이 1분 가까이 걸려요</span></div></div>
+    <div class="frame-tip">화면 안을 누르면 키보드 이동이 멈춰요 · 위 버튼으로 이동해요</div>
+  </div>
+</section>
+
+<!-- ================= 27 감사합니다 ================= -->
+<section class="slide thanks deco" data-title="감사합니다" data-section="시연">
+  <div class="deco-art" aria-hidden="true"><div class="glow"></div></div>
+  <div class="grid3">
+    <div class="r">
+      <div class="kicker">THANK YOU</div>
+      <h1>감사합니다</h1>
+      <p class="lead" style="margin-top:20px">QR을 찍으면 바로 열려요</p>
+    </div>
+    <div class="qr-card r"><!--ERD:qr-web--><svg viewBox="0 0 350 350" class="qr"><g transform="scale(10)"><path fill="#fff" d="M0 0h35v35h-35z"/><path class="qrline" stroke="#000" d="M3 3.5h7m1 0h1m5 0h1m3 0h1m3 0h7m-29 1h1m5 0h1m5 0h1m1 0h1m1 0h1m1 0h1m3 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h6m1 0h1m1 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h1m1 0h3m3 0h3m2 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m2 0h4m1 0h1m2 0h2m3 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m1 0h1m4 0h2m1 0h1m1 0h1m3 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h1m1 0h1m3 0h1m2 0h1m1 0h1m-21 1h1m1 0h1m3 0h2m2 0h3m2 0h2m3 0h1m2 0h1m2 0h1m1 0h1m-28 1h2m1 0h2m2 0h3m4 0h3m1 0h2m1 0h2m3 0h2m-29 1h1m1 0h1m1 0h1m1 0h1m3 0h1m1 0h5m2 0h1m2 0h5m1 0h1m-29 1h1m1 0h1m1 0h2m1 0h2m1 0h1m3 0h2m3 0h3m1 0h1m1 0h1m-25 1h1m3 0h3m1 0h1m2 0h1m2 0h1m4 0h1m1 0h2m4 0h1m-24 1h1m2 0h2m1 0h2m1 0h3m1 0h3m1 0h2m3 0h2m-24 1h2m1 0h1m1 0h1m2 0h3m1 0h1m1 0h2m3 0h1m3 0h1m-29 1h2m1 0h1m1 0h1m1 0h2m1 0h3m3 0h1m2 0h1m1 0h1m-22 1h1m3 0h5m1 0h3m2 0h2m1 0h2m2 0h2m4 0h1m-28 1h1m2 0h1m3 0h1m3 0h1m1 0h4m1 0h5m2 0h3m-29 1h3m3 0h1m2 0h1m1 0h1m1 0h5m1 0h3m3 0h1m2 0h1m-24 1h1m1 0h1m1 0h3m3 0h2m1 0h4m-22 1h2m1 0h1m2 0h5m2 0h3m4 0h6m1 0h1m-20 1h3m1 0h1m2 0h2m1 0h1m1 0h1m3 0h3m1 0h1m-29 1h7m1 0h1m2 0h1m1 0h4m3 0h1m1 0h1m1 0h1m3 0h1m-29 1h1m5 0h1m3 0h3m2 0h2m1 0h3m3 0h1m2 0h1m-28 1h1m1 0h3m1 0h1m2 0h1m1 0h1m1 0h2m1 0h1m2 0h7m1 0h1m-28 1h1m1 0h3m1 0h1m2 0h1m5 0h1m3 0h1m4 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h2m2 0h1m1 0h4m2 0h2m2 0h1m2 0h2m-29 1h1m5 0h1m2 0h1m1 0h2m1 0h2m2 0h1m1 0h4m1 0h1m-26 1h7m1 0h1m3 0h5m3 0h1m1 0h4m2 0h1"/></g></svg><!--/ERD--><div class="nm">코어 웹</div><div class="u">academy-enrollment-web.vercel.app</div></div>
+    <div class="qr-card r"><!--ERD:qr-admin--><svg viewBox="0 0 390 390" class="qr"><g transform="scale(10)"><path fill="#fff" d="M0 0h39v39h-39z"/><path class="qrline" stroke="#000" d="M3 3.5h7m2 0h1m1 0h1m2 0h3m1 0h1m2 0h2m3 0h7m-33 1h1m5 0h1m1 0h1m5 0h2m1 0h1m1 0h3m4 0h1m5 0h1m-33 1h1m1 0h3m1 0h1m3 0h1m2 0h9m4 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h1m1 0h2m2 0h3m2 0h1m1 0h1m1 0h3m1 0h1m-33 1h1m1 0h3m1 0h1m1 0h5m5 0h1m1 0h1m5 0h1m1 0h3m1 0h1m-33 1h1m5 0h1m5 0h2m1 0h1m1 0h1m5 0h2m1 0h1m5 0h1m-33 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-25 1h1m1 0h4m1 0h1m2 0h3m1 0h3m-24 1h1m1 0h4m1 0h3m1 0h1m1 0h1m2 0h1m1 0h1m4 0h3m1 0h2m1 0h1m-30 1h1m1 0h1m2 0h1m1 0h1m3 0h2m3 0h2m3 0h1m4 0h4m-32 1h2m2 0h1m1 0h1m2 0h1m1 0h3m1 0h4m2 0h4m3 0h5m-32 1h2m1 0h1m3 0h1m1 0h4m1 0h1m1 0h1m1 0h2m2 0h1m1 0h1m1 0h1m2 0h1m1 0h1m-33 1h1m1 0h6m2 0h1m1 0h1m1 0h1m2 0h2m1 0h1m2 0h1m2 0h2m-28 1h2m2 0h1m2 0h2m1 0h1m2 0h3m1 0h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m-29 1h1m1 0h1m1 0h2m1 0h1m1 0h3m1 0h2m2 0h1m1 0h2m3 0h1m1 0h1m1 0h1m-31 1h2m6 0h2m1 0h1m2 0h2m4 0h1m4 0h1m1 0h1m2 0h1m1 0h1m-33 1h1m1 0h1m3 0h1m2 0h3m1 0h2m3 0h1m1 0h1m2 0h7m-29 1h2m1 0h2m1 0h1m2 0h2m1 0h1m1 0h8m3 0h1m1 0h1m1 0h1m1 0h1m-33 1h4m2 0h2m1 0h3m2 0h1m1 0h1m2 0h3m1 0h1m3 0h1m1 0h2m1 0h1m-33 1h1m2 0h1m5 0h1m3 0h1m2 0h3m1 0h1m3 0h2m2 0h3m1 0h1m-33 1h2m1 0h8m1 0h2m1 0h2m2 0h2m1 0h1m1 0h2m1 0h1m1 0h1m-30 1h1m2 0h1m3 0h1m3 0h1m1 0h1m1 0h2m1 0h2m1 0h3m3 0h3m-30 1h1m1 0h2m2 0h1m2 0h1m1 0h2m2 0h1m1 0h1m2 0h5m1 0h2m2 0h3m-33 1h1m1 0h1m4 0h1m1 0h3m2 0h4m7 0h1m1 0h2m1 0h3m-33 1h3m1 0h1m1 0h1m4 0h2m4 0h3m3 0h7m1 0h1m-24 1h1m1 0h2m3 0h1m1 0h2m2 0h1m2 0h1m3 0h1m1 0h2m-32 1h7m2 0h2m8 0h1m3 0h2m1 0h1m1 0h1m1 0h1m-31 1h1m5 0h1m1 0h1m2 0h1m1 0h4m1 0h2m2 0h3m3 0h5m-33 1h1m1 0h3m1 0h1m1 0h1m2 0h1m3 0h1m1 0h1m1 0h1m2 0h7m2 0h1m-32 1h1m1 0h3m1 0h1m1 0h3m1 0h3m1 0h2m1 0h2m1 0h1m2 0h1m1 0h1m1 0h2m1 0h1m-33 1h1m1 0h3m1 0h1m2 0h2m1 0h1m2 0h5m1 0h1m1 0h3m1 0h2m1 0h3m-33 1h1m5 0h1m1 0h2m1 0h4m2 0h1m1 0h2m1 0h2m3 0h6m-33 1h7m3 0h1m2 0h4m1 0h2m3 0h6"/></g></svg><!--/ERD--><div class="nm">어드민</div><div class="u">academy-enrollment-admin.vercel.app</div></div>
+  </div>
+  <div class="accounts r">
+    <div class="acct"><div class="who"><span class="badge b-info">코어 웹</span>학생</div><div class="id">student1@naver.com</div><div class="what">내 스케줄·출석·성적 보기</div></div>
+    <div class="acct"><div class="who"><span class="badge b-info">코어 웹</span>학부모</div><div class="id">parent1@naver.com</div><div class="what">자녀 요약·수강 신청·보강·결제</div></div>
+    <div class="acct"><div class="who"><span class="badge b-acc">어드민</span>강사</div><div class="id">teacher1@naver.com</div><div class="what">담당 반 출결·성적 입력</div></div>
+    <div class="acct"><div class="who"><span class="badge b-acc">어드민</span>원장</div><div class="id">admin@naver.com</div><div class="what">전체 메뉴 — 승인·회계·직원 계정</div></div>
+  </div>
+  <p class="note r" style="margin-top:22px">비밀번호는 발표 중에 안내해요 · 데모 데이터라 발표 뒤에는 계정이 바뀌거나 멈출 수 있어요</p>
+</section>
+
+</main>
+</div>
+
+<!-- 조작 막대 (시연 장에서는 숨기고 머리의 버튼을 씀) -->
+<nav id="bar" aria-label="슬라이드 조작">
+  <button type="button" data-act="prev" title="이전 (←)"><svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <span class="count" id="count">01 / 27</span>
+  <button type="button" data-act="next" title="다음 (→)"><svg viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+  <button type="button" data-act="toc" title="목차 (T)"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button>
+  <button type="button" data-act="theme" title="라이트/다크"><svg viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  <button type="button" data-act="full" title="전체 화면 (F)"><svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3M16 21h3a2 2 0 0 0 2-2v-3"/></svg></button>
+</nav>
+
+<!-- 발표 중 목차 덮개 -->
+<div id="toc" role="dialog" aria-modal="true" aria-label="목차">
+  <div class="sheet"><h3>목차 <button type="button" data-act="toc-close">닫기 (Esc)</button></h3><ol id="tocList"></ol></div>
+</div>
+
+<script>
+/* ===========================================
+   설정 — 시연 주소는 여기만 고치면 된다 (비밀값 없음)
+   =========================================== */
+const DEMO = {
+  web: 'https://academy-enrollment-web.vercel.app',
+  admin: 'https://academy-enrollment-admin.vercel.app',
+  backendHealth: 'https://academy-enrollment-backend.onrender.com/health', // 발표 시작 때 한 번 불러 Render를 깨움
+};
+const THEME_KEY = 'hanbit-deck-theme';
+
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   =========================================== */
+class Deck {
+  constructor() {
+    this.stage = document.getElementById('stage');
+    this.slides = [...this.stage.querySelectorAll('.slide')];
+    this.cur = 0;
+    this.fit = this.fit.bind(this);
+    this.buildToc();
+    this.setupTheme();
+    this.setupDemo();
+    this.bind();
+    this.go(this.fromHash(), false);
+    this.fit();
+  }
+
+  /* 1920×1080 무대를 창에 맞춤 (가운데, 여백은 검정/회색) */
+  fit() {
+    const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    this.stage.style.transform = `translate(-50%, -50%) scale(${s})`;
+  }
+
+  fromHash() {
+    const n = parseInt(location.hash.replace('#', ''), 10);
+    return Number.isFinite(n) && n >= 1 && n <= this.slides.length ? n - 1 : 0;
+  }
+
+  go(i, push = true) {
+    i = Math.max(0, Math.min(this.slides.length - 1, i));
+    this.slides.forEach((s, k) => {
+      s.classList.toggle('active', k === i);
+      s.classList.toggle('before', k < i);
+      s.setAttribute('aria-hidden', k === i ? 'false' : 'true');
+    });
+    this.cur = i;
+    const total = String(this.slides.length).padStart(2, '0');
+    document.getElementById('count').textContent = `${String(i + 1).padStart(2, '0')} / ${total}`;
+    document.getElementById('progress').style.width = `${((i + 1) / this.slides.length) * 100}%`;
+    document.body.classList.toggle('on-demo', this.slides[i].classList.contains('demo'));
+    document.querySelectorAll('#tocList button').forEach((b, k) => b.classList.toggle('cur', k === i));
+    const h = '#' + (i + 1);
+    if (location.hash !== h) history[push ? 'pushState' : 'replaceState'](null, '', h);
+    this.loadDemoNear(i);
+  }
+  next() { this.go(this.cur + 1); }
+  prev() { this.go(this.cur - 1); }
+
+  /* 목차: 2번 장(묶음별) + 덮개(전체 목록) */
+  buildToc() {
+    const groups = new Map();
+    this.slides.forEach((s, i) => {
+      const sec = s.dataset.section; if (!sec) return;
+      if (!groups.has(sec)) groups.set(sec, []);
+      groups.get(sec).push([i, s.dataset.title]);
+    });
+    const grid = document.getElementById('tocGrid');
+    const cols = [[0, 3, 4], [1], [2, 5]].map(() => { const c = document.createElement('div'); c.className = 'toc-col'; grid.appendChild(c); return c; });
+    const colOf = (k) => [0, 3, 4].includes(k) ? 0 : (k === 1 ? 1 : 2);
+    let n = 0;
+    for (const [sec, items] of groups) {
+      n += 1;
+      const g = document.createElement('div'); g.className = 'toc-group';
+      g.innerHTML = `<h3><span class="n">${String(n).padStart(2, '0')}</span>${sec}</h3>`;
+      for (const [i, t] of items) {
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'toc-link';
+        b.innerHTML = `<span class="no">${String(i + 1).padStart(2, '0')}</span><span>${t}</span>`;
+        b.addEventListener('click', () => this.go(i));
+        g.appendChild(b);
+      }
+      cols[colOf(n - 1)].appendChild(g);
+    }
+    const list = document.getElementById('tocList');
+    this.slides.forEach((s, i) => {
+      const li = document.createElement('li'); const b = document.createElement('button'); b.type = 'button';
+      b.innerHTML = `<span class="no">${String(i + 1).padStart(2, '0')}</span><span>${s.dataset.title}</span>`;
+      b.addEventListener('click', () => { this.toggleToc(false); this.go(i); });
+      li.appendChild(b); list.appendChild(li);
+    });
+  }
+  toggleToc(open) {
+    const t = document.getElementById('toc');
+    const on = open ?? !t.classList.contains('open');
+    t.classList.toggle('open', on);
+    if (on) t.querySelector('button.cur, #tocList button')?.focus();
+  }
+
+  /* 라이트/다크 — 첫 장 선택 + 조작 막대. 저장 실패해도 동작 */
+  setupTheme() {
+    let saved = null;
+    try { saved = localStorage.getItem(THEME_KEY); } catch (e) {}
+    const q = new URLSearchParams(location.search).get('theme'); // ?theme=dark 로 바로 열기
+    if (q === 'dark' || q === 'light') saved = q;
+    this.setTheme(saved === 'dark' ? 'dark' : 'light', false);
+    document.querySelectorAll('[data-theme-set]').forEach((b) => b.addEventListener('click', () => this.setTheme(b.dataset.themeSet)));
+  }
+  setTheme(t, save = true) {
+    document.documentElement.dataset.theme = t;
+    document.querySelectorAll('[data-theme-set]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeSet === t)));
+    if (save) { try { localStorage.setItem(THEME_KEY, t); } catch (e) {} }
+  }
+
+  /* 시연 iframe: 주소 설정, 가까워지면 불러오기, 로딩·실패 안내 */
+  setupDemo() {
+    try { fetch(DEMO.backendHealth, { mode: 'no-cors' }).catch(() => {}); } catch (e) {}
+    this.slides.filter((s) => s.dataset.demo).forEach((s) => {
+      const url = DEMO[s.dataset.demo];
+      s.querySelector('[data-demo-url]').textContent = url.replace('https://', '');
+      s.querySelector('[data-act="open"]').href = url;
+      const f = s.querySelector('iframe');
+      const state = s.querySelector('.frame-state');
+      f.addEventListener('load', () => { if (f.src) { state.classList.add('hide'); clearTimeout(f._slow); } });
+      f._url = url;
+    });
+  }
+  loadDemoNear(i) {
+    // 시연 장 3장 전부터 미리 불러 둔다 (Render·Vercel 첫 응답 대기 줄이기)
+    this.slides.forEach((s, k) => {
+      if (!s.dataset.demo || k - i > 3) return;
+      const f = s.querySelector('iframe');
+      if (f.src) return;
+      f.src = f._url;
+      const state = s.querySelector('.frame-state');
+      f._slow = setTimeout(() => {
+        state.querySelector('div').innerHTML = '화면이 보이지 않으면 위의 <b>새 탭</b>으로 열어 주세요<br><span style="font-size:20px">브라우저가 iframe을 막았거나 서버가 깨어나는 중일 수 있어요</span>';
+      }, 15000);
+    });
+  }
+  reloadDemo() {
+    const s = this.slides[this.cur]; if (!s.dataset.demo) return;
+    const f = s.querySelector('iframe'); s.querySelector('.frame-state').classList.remove('hide');
+    f.src = 'about:blank'; setTimeout(() => { f.src = f._url; }, 50);
+  }
+
+  toggleFull() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen?.().catch(() => {});
+    else document.exitFullscreen?.();
+  }
+
+  bind() {
+    addEventListener('resize', this.fit);
+    addEventListener('hashchange', () => this.go(this.fromHash(), false));
+    document.addEventListener('keydown', (e) => {
+      if (e.target.closest && e.target.closest('input, textarea, [contenteditable]')) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const tocOpen = document.getElementById('toc').classList.contains('open');
+      if (e.key === 'Escape') { if (tocOpen) { this.toggleToc(false); e.preventDefault(); } return; }
+      if (tocOpen) return;
+      switch (e.key) {
+        case 'ArrowRight': case 'PageDown': case ' ': e.preventDefault(); this.next(); break;
+        case 'ArrowLeft': case 'PageUp': e.preventDefault(); this.prev(); break;
+        case 'Home': e.preventDefault(); this.go(0); break;
+        case 'End': e.preventDefault(); this.go(this.slides.length - 1); break;
+        case 't': case 'T': this.toggleToc(); break;
+        case 'f': case 'F': this.toggleFull(); break;
+      }
+    });
+    document.addEventListener('click', (e) => {
+      const el = e.target.closest('[data-act]'); if (!el) return;
+      const act = el.dataset.act;
+      if (act === 'open') return; // 링크 기본 동작(새 탭)
+      e.preventDefault();
+      ({
+        prev: () => this.prev(), next: () => this.next(), first: () => this.go(0),
+        toc: () => this.toggleToc(true), 'toc-close': () => this.toggleToc(false),
+        theme: () => this.setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark'),
+        full: () => this.toggleFull(), reload: () => this.reloadDemo(),
+      })[act]?.();
+    });
+    document.getElementById('toc').addEventListener('click', (e) => { if (e.target.id === 'toc') this.toggleToc(false); });
+    // 조작 막대: 마우스를 움직이면 잠깐 진하게
+    const bar = document.getElementById('bar'); let t;
+    addEventListener('mousemove', () => { bar.classList.add('awake'); clearTimeout(t); t = setTimeout(() => bar.classList.remove('awake'), 1800); });
+    // 터치 스와이프
+    let sx = null;
+    this.stage.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; }, { passive: true });
+    this.stage.addEventListener('touchend', (e) => {
+      if (sx === null || this.slides[this.cur].classList.contains('demo')) return;
+      const dx = e.changedTouches[0].clientX - sx; sx = null;
+      if (Math.abs(dx) > 60) (dx < 0 ? this.next() : this.prev());
+    });
+  }
+}
+new Deck();
+
+/* ===========================================
+   DECORATION INTERACTION — 표지·마지막 장
+   =========================================== */
+(() => {
+  // 마우스를 따라 움직이는 빛 (무대 좌표로 바꿔 넣음)
+  const stage = document.getElementById('stage');
+  addEventListener('mousemove', (e) => {
+    const r = stage.getBoundingClientRect(); const k = r.width / 1920;
+    const x = (e.clientX - r.left) / k, y = (e.clientY - r.top) / k;
+    stage.querySelectorAll('.slide.deco.active .glow').forEach((g) => { g.style.setProperty('--gx', x + 'px'); g.style.setProperty('--gy', y + 'px'); });
+  });
+})();
+</script>
+</body>
+</html>
