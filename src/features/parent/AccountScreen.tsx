@@ -20,7 +20,7 @@ interface Account {
 
 /** 내 정보 · 회원 탈퇴 — final/screens/c-account. 탈퇴는 조건 확인 후 확인 Modal (결정29) */
 export function AccountScreen() {
-  const { signOut } = useAuth();
+  const { session, signOut, updateUser } = useAuth();
   const { data, setData } = useApi<Account>('/parent/account');
   const [editing, setEditing] = useState(false);
   const [withdrawing, setWithdrawing] = useState(false);
@@ -75,6 +75,8 @@ export function AccountScreen() {
           onClose={() => setEditing(false)}
           onSaved={(next) => {
             setData(next);
+            // 위쪽 머리말의 이름도 바로 바꾼다 (QA BUG-023)
+            if (session) updateUser({ ...session.user, name: next.name });
             setEditing(false);
             toast.success('저장했어요');
           }}

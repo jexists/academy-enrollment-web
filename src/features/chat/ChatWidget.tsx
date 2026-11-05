@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import { useAuth } from '@/features/auth/AuthProvider';
 import { Button } from '@/components/ui/Button';
 import { TextArea } from '@/components/ui/TextArea';
 import { cn } from '@/lib/cn';
@@ -87,6 +88,22 @@ export function ChatWidget() {
   const listRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const focusInput = () => formRef.current?.querySelector('textarea')?.focus();
+
+  // 로그인한 사람이 바뀌면(로그아웃·다른 계정·처음 열 때) 이전 대화를 이어 쓰지 않는다 (QA BUG-022)
+  // 화면의 말풍선은 저장하지 않으니, 보이지 않는 대화 번호만 남아 다음 사람이 이어 쓰는 일을 막는다
+  const { session } = useAuth();
+  const who = session === undefined ? undefined : (session?.user.id ?? null);
+  useEffect(() => {
+    if (who === undefined) return;
+    abortRef.current?.abort();
+    typerRef.current?.cancel();
+    writeConversationId(null);
+    queueMicrotask(() => {
+      setMessages([]);
+      setUnavailable(false);
+      setDraft('');
+    });
+  }, [who]);
 
   // 맨 아래를 보고 있을 때만 새 글자를 따라 내려간다. 위로 올려 읽는 중이면 그대로 둔다
   const [atBottom, setAtBottom] = useState(true);
